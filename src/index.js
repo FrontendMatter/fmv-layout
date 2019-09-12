@@ -10,12 +10,16 @@ import listenOnRootMixin from './mixins/listen-on-root'
 
 import { isArray } from './utils/array'
 import { prefixProps } from './utils/props'
+import { drawerProps } from './components/Drawer.props'
+import sidebarProps from './components/Sidebar.props'
 
 import FmvToggle from './directives/toggle'
 
 const utils = {
   isArray,
-  prefixProps
+  prefixProps,
+  drawerProps,
+  sidebarProps: sidebarProps.props
 }
 
 const mixins = {
