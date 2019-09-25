@@ -1,5 +1,6 @@
 <template>
-  <div class="mdk-header-layout js-mdk-header-layout">
+  <div 
+    class="mdk-header-layout js-mdk-header-layout">
 
     <!-- Header -->
     <app-header
@@ -18,7 +19,8 @@
     <!-- Header Layout Content -->
     <div
       :class="contentClass"
-      class="mdk-header-layout__content">
+      class="mdk-header-layout__content"
+      :style="{ height: fullbleed ? '100%' : '' }">
       <slot/>
     </div>
     <!-- // END header-layout__content -->
@@ -36,6 +38,9 @@ export default {
     AppHeader
   },
   props: {
+    fullbleed: {
+      type: Boolean
+    },
     headerFixed: {
       type: Boolean,
       default: true
@@ -68,19 +73,31 @@ export default {
   mounted() {
     this.$el.addEventListener(
       'domfactory-component-upgraded',
-      this.onUpgrade.bind(this)
+      this.init.bind(this)
     )
     this.$nextTick(() => handler.upgradeElement(this.$el, 'mdk-header-layout'))
   },
   beforeDestroy() {
     this.$el.removeEventListener(
       'domfactory-component-upgraded',
-      this.onUpgrade.bind(this)
+      this.init.bind(this)
     )
     handler.downgradeElement(this.$el, 'mdk-header-layout')
   },
   methods: {
-    onUpgrade() {
+    init() {
+      this.$nextTick(this.reset)
+      setTimeout(this.reset.bind(this), 200)
+      setTimeout(this.reset.bind(this), 1000)
+      this.$el.mdkHeaderLayout.fullbleed = this.fullbleed
+      this.$root.$on('reset::header-layout', this.reset)
+
+      ;['fullbleed'].map(prop => {
+        this.$el.mdkHeaderLayout[prop] = this[prop]
+        this.$watch(prop, val => (this.$el.mdkHeaderLayout[prop] = val))
+      })
+    },
+    reset() {
       this.$el.mdkHeaderLayout._reset()
     }
   }

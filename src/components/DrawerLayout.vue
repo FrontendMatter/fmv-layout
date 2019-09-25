@@ -35,6 +35,9 @@ export default {
       type: Boolean,
       default: true
     },
+    fullbleed: {
+      type: Boolean
+    },
     responsiveWidth: {
       type: String,
       default: '992px'
@@ -46,10 +49,26 @@ export default {
     ...prefixProps(drawerProps, 'drawer')
   },
   mounted() {
+    this.$el.addEventListener(
+      'domfactory-component-upgraded',
+      this.init.bind(this)
+    )
     this.$nextTick(() => handler.upgradeElement(this.$el, 'mdk-drawer-layout'))
   },
   beforeDestroy() {
+    this.$el.removeEventListener(
+      'domfactory-component-upgraded',
+      this.init.bind(this)
+    )
     handler.downgradeElement(this.$el, 'mdk-drawer-layout')
+  },
+  methods: {
+    init() {
+      ;['push', 'responsiveWidth', 'fullbleed'].map(prop => {
+        this.$el.mdkDrawerLayout[prop] = this[prop]
+        this.$watch(prop, val => (this.$el.mdkDrawerLayout[prop] = val))
+      })
+    }
   }
 }
 </script>

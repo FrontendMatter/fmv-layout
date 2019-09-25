@@ -1,4 +1,4 @@
-import { isArray } from '~/utils/array'
+import { isArray } from '../utils/array'
 
 const BVRL = '__BV_root_listeners__'
 

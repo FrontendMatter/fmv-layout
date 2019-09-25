@@ -20,13 +20,14 @@ const EVENT_STATE = 'fm::drawer::state'
 
 // Events we listen to on $root
 const EVENT_TOGGLE = 'fm::toggle::drawer'
+const EVENT_CLOSE = 'fm::close::drawer'
 
 export default {
   mixins: [listenOnRootMixin],
   props: drawerProps,
   data() {
     return {
-      show: this.opened
+      show: null
     }
   },
   computed: {
@@ -41,32 +42,36 @@ export default {
   },
   watch: {
     show(newVal, oldVal) {
+      this.try(() => {
+        this.$el.mdkDrawer[newVal ? 'open' : 'close']()
+        this.emitState()
+      })
+    },
+    opened(newVal, oldVal) {
       if (newVal !== oldVal) {
-        this.try(() => {
-          this.$el.mdkDrawer[newVal ? 'open' : 'close']()
-          this.emitState()
-        })
+        this.show = newVal
       }
     },
     align(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.try(() => {
-          this.$el.mdkDrawer.align = newVal
-          this.emitState()
-        })
-      }
+      this.try(() => {
+        this.$el.mdkDrawer.align = newVal
+        this.emitState()
+      })
     }
   },
   created() {
     // Listen for toggle events to open/close us
     this.listenOnRoot(EVENT_TOGGLE, this.handleToggleEvt)
+    this.listenOnRoot(EVENT_CLOSE, this.handleCloseEvt)
   },
   mounted() {
     this.$el.addEventListener('mdk-drawer-change', () => this.onChangeHandler())
     this.$el.addEventListener('domfactory-component-upgraded', () =>
       this.onInitHandler()
     )
-    this.$nextTick(() => handler.upgradeElement(this.$el, 'mdk-drawer'))
+    this.$nextTick(() => {
+      handler.upgradeElement(this.$el, 'mdk-drawer')
+    })
   },
   beforeDestroy() {
     handler.downgradeElement(this.$el, 'mdk-drawer')
@@ -105,7 +110,7 @@ export default {
       this.show = true
     },
     close() {
-      this.open = false
+      this.show = false
     },
     emitState() {
       this.$emit('input', this.show)
@@ -113,10 +118,16 @@ export default {
       this.$root.$emit(EVENT_STATE, this.id, this.state)
     },
     handleToggleEvt(target) {
-      if (target !== this.id) {
+      if (!!target && target !== this.id) {
         return
       }
       this.toggle()
+    },
+    handleCloseEvt(target) {
+      if (!!target && target !== this.id) {
+        return
+      }
+      this.close()
     }
   }
 }
