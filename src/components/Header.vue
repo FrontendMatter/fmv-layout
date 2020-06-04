@@ -2,7 +2,14 @@
   <div
     :data-effects="headerEffects" 
     class="mdk-header js-mdk-header">
-    <div class="mdk-header__content">
+    <div class="mdk-header__bg">
+      <div 
+        v-if="headerImage"
+        class="mdk-header__bg-front" :style="`background-image: url(${headerImage});`" />
+    </div>
+    <div 
+      class="mdk-header__content"
+      :class="headerContentClass">
       <slot>
         <div data-primary>
           // header
@@ -38,6 +45,14 @@ export default {
     effects: {
       type: [String, Array],
       default: null
+    },
+    headerImage: {
+      type: String,
+      default: null
+    },
+    headerContentClass: {
+      type: [String, Array, Object],
+      default: null
     }
   },
   computed: {
@@ -59,6 +74,8 @@ export default {
     this.$nextTick(() => handler.upgradeElement(this.$el, 'mdk-header'))
   },
   beforeDestroy() {
+    this.$el.mdkHeader.eventTarget.removeEventListener('scroll', () => this.onScroll())
+
     handler.downgradeElement(this.$el, 'mdk-header')
     this.$el.removeEventListener(
       'domfactory-component-upgraded',
@@ -66,11 +83,17 @@ export default {
     )
   },
   methods: {
+    onScroll() {
+      const state = this.$el.mdkHeader.getScrollState()
+      this.$emit('header-target-scroll', state)
+    },
     init() {
       this.props.map(prop => {
         this.$el.mdkHeader[prop] = this[prop]
         this.$watch(prop, val => (this.$el.mdkHeader[prop] = val))
       })
+
+      this.$el.mdkHeader.eventTarget.addEventListener('scroll', () => this.onScroll())
     }
   }
 }

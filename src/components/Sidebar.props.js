@@ -2,8 +2,7 @@ export default {
   props: {
     type: {
       type: String,
-      default: 'light',
-      validator: val => ['dark', 'light'].includes(val)
+      default: 'light'
     },
     variant: {
       type: String,

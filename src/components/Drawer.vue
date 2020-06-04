@@ -3,7 +3,9 @@
     :id="id"
     :data-align="align"
     class="mdk-drawer js-mdk-drawer">
-    <div class="mdk-drawer__content">
+    <div
+      :class="contentClass" 
+      class="mdk-drawer__content">
       <slot/>
     </div>
   </div>

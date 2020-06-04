@@ -1,5 +1,6 @@
 <template>
-  <perfect-scrollbar 
+  <perfect-scrollbar
+    ref="ps" 
     :class="classes"
     class="sidebar o-hidden">
     <slot />
@@ -52,6 +53,15 @@ export default {
       }
 
       return classes
+    }
+  },
+  methods: {
+    update() {
+      this.$nextTick(() => {
+        if (this.$refs.ps) {
+          this.$refs.ps.update()
+        }
+      })
     }
   }
 }

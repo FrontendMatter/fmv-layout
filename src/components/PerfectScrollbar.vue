@@ -87,6 +87,7 @@ export default {
     update() {
       if (this.ps) {
         this.ps.update()
+        this.$emit('update')
       }
     },
     init() {

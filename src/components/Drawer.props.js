@@ -15,5 +15,13 @@ export const drawerProps = {
   opened: {
     type: Boolean,
     default: false
+  },
+  classes: {
+    type: String,
+    default: null
+  },
+  contentClass: {
+    type: String,
+    default: null
   }
 }

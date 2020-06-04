@@ -31,7 +31,9 @@
               :id="getId(item)"
               v-model="item.open"
               class="sidebar-submenu sm-indent"
-              tag="ul">
+              tag="ul"
+              @shown="emitState(getId(item), true)"
+              @hidden="emitState(getId(item), false)">
               <router-link
                 v-for="(child, idx) in item.children"
                 :key="`smi-${idx}-${$store.state.locale}`"
@@ -55,7 +57,7 @@
           @click="onClick($event, item.click)"
           class="sidebar-menu-item"
           tag="li"
-          exact>
+          :exact="item.exact !== false">
           <a class="sidebar-menu-button">
             <component
               v-if="!!item.icon" 
@@ -104,6 +106,11 @@ export default {
     localMenu: 'matchRoute',
     '$route': 'matchRoute'
   },
+  created() {
+    this.$root.$on('bv::collapse::state', (collapseId, open) => {
+      this.emitState(collapseId, false, open)
+    })
+  },
   mounted() {
     this.localMenu = this.menu
   },
@@ -111,20 +118,33 @@ export default {
     matchRoute() {
       this.$nextTick(() => {
         this.localMenu.map(item => {
+          const open = this.routeMatches(item)
           this[
-            this.routeMatches(item) ? 'open' : 'close'
+            open ? 'open' : 'close'
           ](item)
         })
       })
     },
     open(target) {
       if (!target.open) {
+        const targetId = this.getId(target)
         this.$set(target, 'open', true)
-        this.$root.$emit('bv::toggle::collapse', this.getId(target))
+        this.$emit('open', targetId)
+        this.$root.$emit('bv::toggle::collapse', targetId)
       }
     },
     close(target) {
       this.$set(target, 'open', false)
+      this.$emit('close', this.getId(target))
+    },
+    emitState(targetId, opened, open) {
+      const state = {
+        targetId,
+        open,
+        opened
+      }
+      this.$emit('state', state)
+      this.$root.$emit('fmv::sidebar-menu::state', state)
     },
     getId(item) {
       return `sm${item.id}`

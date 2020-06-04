@@ -9,7 +9,10 @@
       :condenses="headerCondenses"
       :disabled="headerDisabled"
       :effects="headerEffects"
-      :class="headerClass">
+      :header-image="headerImage"
+      :header-content-class="headerContentClass"
+      :class="headerClass"
+      @header-target-scroll="handleEmit('header-target-scroll', $event)">
       <slot name="header">
         // header
       </slot>
@@ -19,6 +22,7 @@
     <!-- Header Layout Content -->
     <div
       :class="contentClass"
+      :id="contentId"
       class="mdk-header-layout__content"
       :style="{ height: fullbleed ? '100%' : '' }">
       <slot/>
@@ -65,10 +69,25 @@ export default {
       type: [String, Array, Object],
       default: null
     },
+    headerContentClass: {
+      type: [String, Array, Object],
+      default: null
+    },
     contentClass: {
       type: [String, Array, Object],
       default: null
+    },
+    contentId: {
+      type: String,
+      default: null
+    },
+    headerImage: {
+      type: String,
+      default: null
     }
+  },
+  watch: {
+    headerClass: 'reset'
   },
   mounted() {
     this.$el.addEventListener(
@@ -92,13 +111,18 @@ export default {
       this.$el.mdkHeaderLayout.fullbleed = this.fullbleed
       this.$root.$on('reset::header-layout', this.reset)
 
+      this.$watch('$route', this.reset)
+
       ;['fullbleed'].map(prop => {
         this.$el.mdkHeaderLayout[prop] = this[prop]
         this.$watch(prop, val => (this.$el.mdkHeaderLayout[prop] = val))
       })
     },
     reset() {
-      this.$el.mdkHeaderLayout._reset()
+      this.$nextTick(() => this.$el.mdkHeaderLayout._reset())
+    },
+    handleEmit(type, e) {
+      this.$emit(type, e)
     }
   }
 }

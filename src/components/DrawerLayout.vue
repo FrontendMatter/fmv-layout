@@ -1,17 +1,32 @@
 <template>
   <div
     :data-push="push"
-    :data-responsive-width="responsiveWidth" 
+    :data-responsive-width="responsiveWidth"
+    :fullbleed="fullbleed" 
     class="mdk-drawer-layout js-mdk-drawer-layout">
     <div
+      :id="contentId"
       :class="contentClass" 
       class="mdk-drawer-layout__content">
-      <slot/>
+      
+      <perfect-scrollbar
+        v-if="hasScrollingRegion"
+        style="height: 100%"
+        @ps-scroll-y="$emit($event.type, $event)">
+        <slot/>
+      </perfect-scrollbar>
+
+      <slot 
+        v-else />
+
     </div>
     <!-- // END drawer-layout__content -->
 
     <drawer
-      :align="drawerAlign">
+      :id="drawerId"
+      :align="drawerAlign"
+      :class="drawerClasses"
+      :content-class="drawerContentClass">
       <slot name="drawer">
         // drawer
       </slot>
@@ -23,12 +38,14 @@
 import { handler } from 'dom-factory'
 import 'material-design-kit/dist/drawer-layout.js'
 import Drawer from './Drawer.vue'
+import PerfectScrollbar from './PerfectScrollbar.vue'
 import { drawerProps } from './Drawer.props'
 import { prefixProps } from '../utils/props'
 
 export default {
   components: {
-    Drawer
+    Drawer,
+    PerfectScrollbar
   },
   props: {
     push: {
@@ -38,12 +55,19 @@ export default {
     fullbleed: {
       type: Boolean
     },
+    hasScrollingRegion: {
+      type: Boolean
+    },
     responsiveWidth: {
       type: String,
       default: '992px'
     },
     contentClass: {
       type: [String, Array, Object],
+      default: null
+    },
+    contentId: {
+      type: String,
       default: null
     },
     ...prefixProps(drawerProps, 'drawer')
@@ -64,7 +88,7 @@ export default {
   },
   methods: {
     init() {
-      ;['push', 'responsiveWidth', 'fullbleed'].map(prop => {
+      ;['push', 'responsiveWidth', 'fullbleed', 'hasScrollingRegion'].map(prop => {
         this.$el.mdkDrawerLayout[prop] = this[prop]
         this.$watch(prop, val => (this.$el.mdkDrawerLayout[prop] = val))
       })
