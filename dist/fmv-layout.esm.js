@@ -4,6 +4,7 @@ import 'material-design-kit/dist/drawer-layout.js';
 import PerfectScrollbar$1 from 'perfect-scrollbar';
 import camelCaseKeys from 'camelcase-keys';
 import 'material-design-kit/dist/header.js';
+import 'material-design-kit/dist/box.js';
 import 'material-design-kit/dist/header-layout.js';
 import target from 'bootstrap-vue/esm/utils/target';
 import { setAttr, addClass, removeClass } from 'bootstrap-vue/esm/utils/dom';
@@ -625,6 +626,7 @@ var script$3 = {
       });
 
       this.$el.mdkHeader.eventTarget.addEventListener('scroll', function () { return this$1.onScroll(); });
+      this.$nextTick(function () { return this$1.$el.mdkHeader._reset(); });
     }
   }
 };
@@ -633,7 +635,7 @@ var script$3 = {
 var __vue_script__$3 = script$3;
 
 /* template */
-var __vue_render__$3 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mdk-header js-mdk-header",attrs:{"data-effects":_vm.headerEffects}},[_c('div',{staticClass:"mdk-header__bg"},[(_vm.headerImage)?_c('div',{staticClass:"mdk-header__bg-front",style:(("background-image: url(" + _vm.headerImage + ");"))}):_vm._e()]),_vm._v(" "),_c('div',{staticClass:"mdk-header__content",class:_vm.headerContentClass},[_vm._t("default",[_c('div',{attrs:{"data-primary":""}},[_vm._v("\n        // header\n      ")])])],2)])};
+var __vue_render__$3 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mdk-header js-mdk-header",attrs:{"data-effects":_vm.headerEffects}},[_c('div',{staticClass:"mdk-header__bg"},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.headerImage),expression:"headerImage"}],staticClass:"mdk-header__bg-front",style:(("background-image: url(" + _vm.headerImage + ");"))})]),_vm._v(" "),_c('div',{staticClass:"mdk-header__content",class:_vm.headerContentClass},[_vm._t("default",[_c('div',{attrs:{"data-primary":""}},[_vm._v("\n        // header\n      ")])])],2)])};
 var __vue_staticRenderFns__$3 = [];
 
   /* style */
@@ -664,6 +666,111 @@ var __vue_staticRenderFns__$3 = [];
 //
 
 var script$4 = {
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    effects: {
+      type: [String, Array],
+      default: null
+    },
+    boxImage: {
+      type: String,
+      default: null
+    },
+    boxContentClass: {
+      type: [String, Array, Object],
+      default: null
+    }
+  },
+  computed: {
+    props: function props() {
+      return ['disabled']
+    },
+    boxEffects: function boxEffects() {
+      if (this.effects) {
+        var effects = isArray(this.effects) ? this.effects : [this.effects];
+        return effects.join(' ')
+      }
+    }
+  },
+  mounted: function mounted() {
+    var this$1 = this;
+
+    this.$el.addEventListener(
+      'domfactory-component-upgraded',
+      this.init.bind(this)
+    );
+    this.$nextTick(function () { return handler.upgradeElement(this$1.$el, 'mdk-box'); });
+  },
+  beforeDestroy: function beforeDestroy() {
+    var this$1 = this;
+
+    if (this.$el.mdkBox) {
+      this.$el.mdkBox.eventTarget.removeEventListener('scroll', function () { return this$1.onScroll(); });
+    }
+
+    handler.downgradeElement(this.$el, 'mdk-box');
+    this.$el.removeEventListener(
+      'domfactory-component-upgraded',
+      this.init.bind(this)
+    );
+  },
+  methods: {
+    onScroll: function onScroll() {
+      var state = this.$el.mdkBox.getScrollState();
+      this.$emit('header-target-scroll', state);
+    },
+    init: function init() {
+      var this$1 = this;
+
+      this.props.map(function (prop) {
+        this$1.$el.mdkBox[prop] = this$1[prop];
+        this$1.$watch(prop, function (val) { return (this$1.$el.mdkBox[prop] = val); });
+      });
+
+      this.$el.mdkBox.eventTarget.addEventListener('scroll', function () { return this$1.onScroll(); });
+      this.$nextTick(function () { return this$1.$el.mdkBox._reset(); });
+    }
+  }
+};
+
+/* script */
+var __vue_script__$4 = script$4;
+
+/* template */
+var __vue_render__$4 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mdk-box",attrs:{"data-effects":_vm.boxEffects}},[_c('div',{staticClass:"mdk-box__bg"},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.boxImage),expression:"boxImage"}],staticClass:"mdk-box__bg-front",style:(("background-image: url(" + _vm.boxImage + ");"))})]),_vm._v(" "),_c('div',{staticClass:"mdk-box__content",class:_vm.boxContentClass},[_vm._t("default",[_c('div',[_vm._v("\n        // box content\n      ")])])],2)])};
+var __vue_staticRenderFns__$4 = [];
+
+  /* style */
+  var __vue_inject_styles__$4 = undefined;
+  /* scoped */
+  var __vue_scope_id__$4 = undefined;
+  /* module identifier */
+  var __vue_module_identifier__$4 = undefined;
+  /* functional template */
+  var __vue_is_functional_template__$4 = false;
+  /* style inject */
+  
+  /* style inject SSR */
+  
+
+  
+  var Box = normalizeComponent_1(
+    { render: __vue_render__$4, staticRenderFns: __vue_staticRenderFns__$4 },
+    __vue_inject_styles__$4,
+    __vue_script__$4,
+    __vue_scope_id__$4,
+    __vue_is_functional_template__$4,
+    __vue_module_identifier__$4,
+    undefined,
+    undefined
+  );
+
+//
+
+var script$5 = {
   components: {
     AppHeader: AppHeader
   },
@@ -760,20 +867,20 @@ var script$4 = {
 };
 
 /* script */
-var __vue_script__$4 = script$4;
+var __vue_script__$5 = script$5;
 
 /* template */
-var __vue_render__$4 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mdk-header-layout js-mdk-header-layout"},[_c('app-header',{class:_vm.headerClass,attrs:{"fixed":_vm.headerFixed,"reveals":_vm.headerReveals,"condenses":_vm.headerCondenses,"disabled":_vm.headerDisabled,"effects":_vm.headerEffects,"header-image":_vm.headerImage,"header-content-class":_vm.headerContentClass},on:{"header-target-scroll":function($event){return _vm.handleEmit('header-target-scroll', $event)}}},[_vm._t("header",[_vm._v("\n      // header\n    ")])],2),_vm._v(" "),_c('div',{staticClass:"mdk-header-layout__content",class:_vm.contentClass,style:({ height: _vm.fullbleed ? '100%' : '' }),attrs:{"id":_vm.contentId}},[_vm._t("default")],2)],1)};
-var __vue_staticRenderFns__$4 = [];
+var __vue_render__$5 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mdk-header-layout js-mdk-header-layout"},[_c('app-header',{class:_vm.headerClass,attrs:{"fixed":_vm.headerFixed,"reveals":_vm.headerReveals,"condenses":_vm.headerCondenses,"disabled":_vm.headerDisabled,"effects":_vm.headerEffects,"header-image":_vm.headerImage,"header-content-class":_vm.headerContentClass},on:{"header-target-scroll":function($event){return _vm.handleEmit('header-target-scroll', $event)}}},[_vm._t("header",[_vm._v("\n      // header\n    ")])],2),_vm._v(" "),_c('div',{staticClass:"mdk-header-layout__content",class:_vm.contentClass,style:({ height: _vm.fullbleed ? '100%' : '' }),attrs:{"id":_vm.contentId}},[_vm._t("default")],2)],1)};
+var __vue_staticRenderFns__$5 = [];
 
   /* style */
-  var __vue_inject_styles__$4 = undefined;
+  var __vue_inject_styles__$5 = undefined;
   /* scoped */
-  var __vue_scope_id__$4 = undefined;
+  var __vue_scope_id__$5 = undefined;
   /* module identifier */
-  var __vue_module_identifier__$4 = undefined;
+  var __vue_module_identifier__$5 = undefined;
   /* functional template */
-  var __vue_is_functional_template__$4 = false;
+  var __vue_is_functional_template__$5 = false;
   /* style inject */
   
   /* style inject SSR */
@@ -781,12 +888,12 @@ var __vue_staticRenderFns__$4 = [];
 
   
   var HeaderLayout = normalizeComponent_1(
-    { render: __vue_render__$4, staticRenderFns: __vue_staticRenderFns__$4 },
-    __vue_inject_styles__$4,
-    __vue_script__$4,
-    __vue_scope_id__$4,
-    __vue_is_functional_template__$4,
-    __vue_module_identifier__$4,
+    { render: __vue_render__$5, staticRenderFns: __vue_staticRenderFns__$5 },
+    __vue_inject_styles__$5,
+    __vue_script__$5,
+    __vue_scope_id__$5,
+    __vue_is_functional_template__$5,
+    __vue_module_identifier__$5,
     undefined,
     undefined
   );
@@ -811,7 +918,7 @@ var sidebarProps = {
 
 //
 
-var script$5 = {
+var script$6 = {
   components: {
     PerfectScrollbar: PerfectScrollbar
   },
@@ -869,20 +976,20 @@ var script$5 = {
 };
 
 /* script */
-var __vue_script__$5 = script$5;
+var __vue_script__$6 = script$6;
 
 /* template */
-var __vue_render__$5 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('perfect-scrollbar',{ref:"ps",staticClass:"sidebar o-hidden",class:_vm.classes},[_vm._t("default")],2)};
-var __vue_staticRenderFns__$5 = [];
+var __vue_render__$6 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('perfect-scrollbar',{ref:"ps",staticClass:"sidebar o-hidden",class:_vm.classes},[_vm._t("default")],2)};
+var __vue_staticRenderFns__$6 = [];
 
   /* style */
-  var __vue_inject_styles__$5 = undefined;
+  var __vue_inject_styles__$6 = undefined;
   /* scoped */
-  var __vue_scope_id__$5 = undefined;
+  var __vue_scope_id__$6 = undefined;
   /* module identifier */
-  var __vue_module_identifier__$5 = undefined;
+  var __vue_module_identifier__$6 = undefined;
   /* functional template */
-  var __vue_is_functional_template__$5 = false;
+  var __vue_is_functional_template__$6 = false;
   /* style inject */
   
   /* style inject SSR */
@@ -890,12 +997,12 @@ var __vue_staticRenderFns__$5 = [];
 
   
   var Sidebar = normalizeComponent_1(
-    { render: __vue_render__$5, staticRenderFns: __vue_staticRenderFns__$5 },
-    __vue_inject_styles__$5,
-    __vue_script__$5,
-    __vue_scope_id__$5,
-    __vue_is_functional_template__$5,
-    __vue_module_identifier__$5,
+    { render: __vue_render__$6, staticRenderFns: __vue_staticRenderFns__$6 },
+    __vue_inject_styles__$6,
+    __vue_script__$6,
+    __vue_scope_id__$6,
+    __vue_is_functional_template__$6,
+    __vue_module_identifier__$6,
     undefined,
     undefined
   );
@@ -983,7 +1090,7 @@ var __vue_staticRenderFns__$5 = [];
 //
 //
 
-var script$6 = {
+var script$7 = {
   props: {
     menu: {
       type: Array,
@@ -1095,23 +1202,23 @@ var script$6 = {
 };
 
 /* script */
-var __vue_script__$6 = script$6;
+var __vue_script__$7 = script$7;
 
 /* template */
-var __vue_render__$6 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(_vm.menu)?_c('ul',{staticClass:"sidebar-menu",class:_vm.menuClass},[_vm._l((_vm.localMenu),function(item,itemIdx){return [(item.children !== undefined && item.children.length)?[_c('li',{key:("smi-collapse-" + itemIdx),staticClass:"sidebar-menu-item",class:{ 'open': item.open }},[_c('a',{directives:[{name:"b-toggle",rawName:"v-b-toggle",value:(_vm.getId(item)),expression:"getId(item)"}],staticClass:"sidebar-menu-button",attrs:{"href":"#"}},[(!!item.icon)?_c(item.icon.type,{tag:"component",staticClass:"sidebar-menu-icon",class:{ 
+var __vue_render__$7 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(_vm.menu)?_c('ul',{staticClass:"sidebar-menu",class:_vm.menuClass},[_vm._l((_vm.localMenu),function(item,itemIdx){return [(item.children !== undefined && item.children.length)?[_c('li',{key:("smi-collapse-" + itemIdx),staticClass:"sidebar-menu-item",class:{ 'open': item.open }},[_c('a',{directives:[{name:"b-toggle",rawName:"v-b-toggle",value:(_vm.getId(item)),expression:"getId(item)"}],staticClass:"sidebar-menu-button",attrs:{"href":"#"}},[(!!item.icon)?_c(item.icon.type,{tag:"component",staticClass:"sidebar-menu-icon",class:{ 
                 'sidebar-menu-icon--left': item.icon.align === undefined || item.icon.align === 'left',
                 'sidebar-menu-icon--right': item.icon.align === 'right',
               },domProps:{"textContent":_vm._s(item.icon.id)}}):_vm._e(),_vm._v("\n            "+_vm._s(item.label)+"\n            "),_c('span',{staticClass:"ml-auto sidebar-menu-toggle-icon"})],1),_vm._v(" "),_c('b-collapse',{staticClass:"sidebar-submenu sm-indent",attrs:{"id":_vm.getId(item),"tag":"ul"},on:{"shown":function($event){_vm.emitState(_vm.getId(item), true);},"hidden":function($event){_vm.emitState(_vm.getId(item), false);}},model:{value:(item.open),callback:function ($$v) {_vm.$set(item, "open", $$v);},expression:"item.open"}},_vm._l((item.children),function(child,idx){return _c('router-link',{key:("smi-" + idx + "-" + (_vm.$store.state.locale)),staticClass:"sidebar-menu-item",attrs:{"to":child.route,"tag":"li","exact":""}},[_c('a',{staticClass:"sidebar-menu-button"},[_c('span',{staticClass:"sidebar-menu-text"},[_vm._v(_vm._s(child.label))])])])}),1)],1)]:_c(item.route ? 'router-link' : 'li',{key:("smi-" + itemIdx + "-" + (_vm.$store.state.locale)),tag:"component",staticClass:"sidebar-menu-item",attrs:{"to":item.route ? item.route : {},"tag":"li","exact":item.exact !== false},on:{"click":function($event){return _vm.onClick($event, item.click)}}},[_c('a',{staticClass:"sidebar-menu-button"},[(!!item.icon)?_c(item.icon.type,{tag:"component",staticClass:"sidebar-menu-icon sidebar-menu-icon--left",domProps:{"textContent":_vm._s(item.icon.id)}}):_vm._e(),_vm._v(" "),_c('span',{staticClass:"sidebar-menu-text",domProps:{"textContent":_vm._s(item.label)}}),_vm._v(" "),(item.badge)?_c('b-badge',{staticClass:"sidebar-menu-badge ml-auto",attrs:{"variant":item.badge.variant},domProps:{"textContent":_vm._s(item.badge.label)}}):_vm._e()],1)])]})],2):_vm._e()])};
-var __vue_staticRenderFns__$6 = [];
+var __vue_staticRenderFns__$7 = [];
 
   /* style */
-  var __vue_inject_styles__$6 = undefined;
+  var __vue_inject_styles__$7 = undefined;
   /* scoped */
-  var __vue_scope_id__$6 = undefined;
+  var __vue_scope_id__$7 = undefined;
   /* module identifier */
-  var __vue_module_identifier__$6 = undefined;
+  var __vue_module_identifier__$7 = undefined;
   /* functional template */
-  var __vue_is_functional_template__$6 = false;
+  var __vue_is_functional_template__$7 = false;
   /* style inject */
   
   /* style inject SSR */
@@ -1119,12 +1226,12 @@ var __vue_staticRenderFns__$6 = [];
 
   
   var SidebarMenu = normalizeComponent_1(
-    { render: __vue_render__$6, staticRenderFns: __vue_staticRenderFns__$6 },
-    __vue_inject_styles__$6,
-    __vue_script__$6,
-    __vue_scope_id__$6,
-    __vue_is_functional_template__$6,
-    __vue_module_identifier__$6,
+    { render: __vue_render__$7, staticRenderFns: __vue_staticRenderFns__$7 },
+    __vue_inject_styles__$7,
+    __vue_script__$7,
+    __vue_scope_id__$7,
+    __vue_is_functional_template__$7,
+    __vue_module_identifier__$7,
     undefined,
     undefined
   );
@@ -1207,4 +1314,4 @@ var mixins = {
   listenOnRootMixin: listenOnRootMixin
 };
 
-export { Drawer as FmvDrawer, DrawerLayout as FmvDrawerLayout, AppHeader as FmvHeader, HeaderLayout as FmvHeaderLayout, PerfectScrollbar as FmvPerfectScrollbar, Sidebar as FmvSidebar, SidebarMenu as FmvSidebarMenu, toggle as FmvToggle, mixins, utils };
+export { Box as FmvBox, Drawer as FmvDrawer, DrawerLayout as FmvDrawerLayout, AppHeader as FmvHeader, HeaderLayout as FmvHeaderLayout, PerfectScrollbar as FmvPerfectScrollbar, Sidebar as FmvSidebar, SidebarMenu as FmvSidebarMenu, toggle as FmvToggle, mixins, utils };

@@ -1,6 +1,7 @@
 import FmvDrawer from './components/Drawer.vue'
 import FmvDrawerLayout from './components/DrawerLayout.vue'
 import FmvHeader from './components/Header.vue'
+import FmvBox from './components/Box.vue'
 import FmvHeaderLayout from './components/HeaderLayout.vue'
 import FmvPerfectScrollbar from './components/PerfectScrollbar.vue'
 import FmvSidebar from './components/Sidebar.vue'
@@ -30,6 +31,7 @@ export {
   FmvDrawer,
   FmvDrawerLayout,
   FmvHeader,
+  FmvBox,
   FmvHeaderLayout,
   FmvPerfectScrollbar,
   FmvSidebar,

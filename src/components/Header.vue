@@ -4,7 +4,7 @@
     class="mdk-header js-mdk-header">
     <div class="mdk-header__bg">
       <div 
-        v-if="headerImage"
+        v-show="headerImage"
         class="mdk-header__bg-front" :style="`background-image: url(${headerImage});`" />
     </div>
     <div 
@@ -94,6 +94,7 @@ export default {
       })
 
       this.$el.mdkHeader.eventTarget.addEventListener('scroll', () => this.onScroll())
+      this.$nextTick(() => this.$el.mdkHeader._reset())
     }
   }
 }
