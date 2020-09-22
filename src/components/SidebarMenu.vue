@@ -14,7 +14,8 @@
             <a 
               v-b-toggle="getId(item)"
               class="sidebar-menu-button"
-              href="#">
+              href="#"
+              @click.prevent>
               <component
                 v-if="!!item.icon"
                 :is="item.icon.type"
@@ -82,6 +83,7 @@
 
 <script>
 export default {
+  name: 'FmvSidebarMenu',
   props: {
     menu: {
       type: Array,
@@ -100,21 +102,59 @@ export default {
     }
   },
   watch: {
-    menu(menu) {
-      this.localMenu = menu
-    },
-    localMenu: 'matchRoute',
     '$route': 'matchRoute'
   },
   created() {
+    this.setMenu(this.menu)
     this.$root.$on('bv::collapse::state', (collapseId, open) => {
       this.emitState(collapseId, false, open)
     })
   },
-  mounted() {
-    this.localMenu = this.menu
-  },
   methods: {
+    setMenu(menu) {
+      try {
+        this.localMenu = menu.map(item => {
+          return {
+            id: item.id,
+            label: item.label,
+            icon: !!item.icon ? {
+              id: item.icon.id,
+              type: item.icon.type,
+            } : null,
+            open: item.open,
+            click: item.click,
+            route: item.route,
+            exact: item.exact,
+            children: item.children
+          }
+        })
+        this.matchRoute()
+      } catch(e) {
+        console.warn(`
+          Invalid sidebar menu structure. Valid example:
+          [
+            {
+              id: <String> 'auth',
+              label: <String> 'Auth',
+              icon: <Object> {
+                id: 'md-icon',
+                type: 'tune',
+              },
+              open: <Boolean> false,
+              click: <Function> function(event){},
+              route: <String|Object>,
+              exact: <Boolean> true,
+              children: <Array> [
+                {
+                  label: <String> 'Sign up',
+                  route: <String|Object> '/signup'
+                }
+              ]
+            }
+          ]
+        `)
+      }
+    },
     matchRoute() {
       this.$nextTick(() => {
         this.localMenu.map(item => {
@@ -126,7 +166,7 @@ export default {
       })
     },
     open(target) {
-      if (!target.open) {
+      if (target.open !== true) {
         const targetId = this.getId(target)
         this.$set(target, 'open', true)
         this.$emit('open', targetId)

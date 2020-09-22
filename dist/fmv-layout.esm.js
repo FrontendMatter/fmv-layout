@@ -1,22 +1,38 @@
 import { handler } from 'dom-factory';
-import 'material-design-kit/dist/drawer.js';
-import 'material-design-kit/dist/drawer-layout.js';
+import { drawerComponent, drawerLayoutComponent, headerComponent, boxComponent, headerLayoutComponent } from 'material-design-kit';
+import 'core-js/modules/es.array.concat';
+import 'core-js/modules/es.object.to-string';
+import 'core-js/modules/es.regexp.to-string';
+import 'core-js/modules/es.array.includes';
+import 'core-js/modules/es.symbol';
+import 'core-js/modules/es.array.filter';
+import 'core-js/modules/es.array.for-each';
+import 'core-js/modules/es.array.map';
+import 'core-js/modules/es.object.get-own-property-descriptor';
+import 'core-js/modules/es.object.get-own-property-descriptors';
+import 'core-js/modules/es.object.keys';
+import 'core-js/modules/web.dom-collections.for-each';
+import _defineProperty from '@babel/runtime/helpers/defineProperty';
+import 'core-js/modules/es.object.assign';
 import PerfectScrollbar$1 from 'perfect-scrollbar';
 import camelCaseKeys from 'camelcase-keys';
-import 'material-design-kit/dist/header.js';
-import 'material-design-kit/dist/box.js';
-import 'material-design-kit/dist/header-layout.js';
+import 'core-js/modules/es.array.join';
+import 'core-js/modules/es.regexp.exec';
+import 'core-js/modules/es.string.split';
+import 'core-js/modules/es.function.name';
+import 'core-js/modules/es.array.index-of';
 import target from 'bootstrap-vue/esm/utils/target';
 import { setAttr, addClass, removeClass } from 'bootstrap-vue/esm/utils/dom';
 
 if (!Array.isArray) {
-  Array.isArray = function (arg) { return Object.prototype.toString.call(arg) === '[object Array]'; };
+  Array.isArray = function (arg) {
+    return Object.prototype.toString.call(arg) === '[object Array]';
+  };
 }
 
 var isArray = Array.isArray;
 
 var BVRL = '__BV_root_listeners__';
-
 var listenOnRootMixin = {
   methods: {
     /**
@@ -38,9 +54,13 @@ var listenOnRootMixin = {
       if (!this[BVRL] || !isArray(this[BVRL])) {
         this[BVRL] = [];
       }
-      this[BVRL].push({ event: event, callback: callback });
+
+      this[BVRL].push({
+        event: event,
+        callback: callback
+      });
       this.$root.$on(event, callback);
-      return this
+      return this;
     },
 
     /**
@@ -50,22 +70,27 @@ var listenOnRootMixin = {
      * @chainable
      */
     emitOnRoot: function emitOnRoot(event) {
-      var ref;
+      var arguments$1 = arguments;
 
-      var args = [], len = arguments.length - 1;
-      while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
-      (ref = this.$root).$emit.apply(ref, [ event ].concat( args ));
-      return this
+      var _this$$root;
+
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments$1[_key];
+      }
+
+      (_this$$root = this.$root).$emit.apply(_this$$root, [event].concat(args));
+
+      return this;
     }
   },
-
   beforeDestroy: function beforeDestroy() {
     if (this[BVRL] && isArray(this[BVRL])) {
       while (this[BVRL].length > 0) {
         // shift to process in order
-        var ref = this[BVRL].shift();
-        var event = ref.event;
-        var callback = ref.callback;
+        var _this$BVRL$shift = this[BVRL].shift(),
+            event = _this$BVRL$shift.event,
+            callback = _this$BVRL$shift.callback;
+
         this.$root.$off(event, callback);
       }
     }
@@ -75,12 +100,16 @@ var listenOnRootMixin = {
 var drawerProps = {
   id: {
     type: String,
-    default: function () { return 'default-drawer'; }
+    default: function _default() {
+      return 'default-drawer';
+    }
   },
   align: {
     type: String,
     default: 'start',
-    validator: function (val) { return ['start', 'end', 'left', 'right'].includes(val); }
+    validator: function validator(val) {
+      return ['start', 'end', 'left', 'right'].includes(val);
+    }
   },
   persistent: {
     type: Boolean,
@@ -101,21 +130,19 @@ var drawerProps = {
 };
 
 //
+handler.register('mdk-drawer', drawerComponent);
 
-// Events we emit on $root
-var EVENT_STATE = 'fm::drawer::state';
+var EVENT_STATE = 'fm::drawer::state'; // Events we listen to on $root
 
-// Events we listen to on $root
 var EVENT_TOGGLE = 'fm::toggle::drawer';
 var EVENT_CLOSE = 'fm::close::drawer';
-
 var script = {
   mixins: [listenOnRootMixin],
   props: drawerProps,
   data: function data() {
     return {
       show: null
-    }
+    };
   },
   computed: {
     state: function state() {
@@ -124,16 +151,17 @@ var script = {
         show: this.show,
         align: this.align,
         persistent: this.persistent
-      }
+      };
     }
   },
   watch: {
     show: function show(newVal, oldVal) {
-      var this$1 = this;
+      var _this = this;
 
       this.try(function () {
-        this$1.$el.mdkDrawer[newVal ? 'open' : 'close']();
-        this$1.emitState();
+        _this.$el.mdkDrawer[newVal ? 'open' : 'close']();
+
+        _this.emitState();
       });
     },
     opened: function opened(newVal, oldVal) {
@@ -142,11 +170,12 @@ var script = {
       }
     },
     align: function align(newVal, oldVal) {
-      var this$1 = this;
+      var _this2 = this;
 
       this.try(function () {
-        this$1.$el.mdkDrawer.align = newVal;
-        this$1.emitState();
+        _this2.$el.mdkDrawer.align = newVal;
+
+        _this2.emitState();
       });
     }
   },
@@ -156,23 +185,28 @@ var script = {
     this.listenOnRoot(EVENT_CLOSE, this.handleCloseEvt);
   },
   mounted: function mounted() {
-    var this$1 = this;
+    var _this3 = this;
 
-    this.$el.addEventListener('mdk-drawer-change', function () { return this$1.onChangeHandler(); });
-    this.$el.addEventListener('domfactory-component-upgraded', function () { return this$1.onInitHandler(); }
-    );
+    this.$el.addEventListener('mdk-drawer-change', function () {
+      return _this3.onChangeHandler();
+    });
+    this.$el.addEventListener('domfactory-component-upgraded', function () {
+      return _this3.onInitHandler();
+    });
     this.$nextTick(function () {
-      handler.upgradeElement(this$1.$el, 'mdk-drawer');
+      handler.upgradeElement(_this3.$el, 'mdk-drawer');
     });
   },
   beforeDestroy: function beforeDestroy() {
-    var this$1 = this;
+    var _this4 = this;
 
     handler.downgradeElement(this.$el, 'mdk-drawer');
-    this.$el.removeEventListener('mdk-drawer-change', function () { return this$1.onChangeHandler(); }
-    );
-    this.$el.removeEventListener('domfactory-component-upgraded', function () { return this$1.onInitHandler(); }
-    );
+    this.$el.removeEventListener('mdk-drawer-change', function () {
+      return _this4.onChangeHandler();
+    });
+    this.$el.removeEventListener('domfactory-component-upgraded', function () {
+      return _this4.onInitHandler();
+    });
   },
   methods: {
     onInitHandler: function onInitHandler() {
@@ -185,14 +219,11 @@ var script = {
         this.show = this.$el.mdkDrawer.opened;
       }
     },
-    try: function try$1(callback) {
+    try: function _try(callback) {
       try {
         callback();
       } catch (e) {
-        this.$el.addEventListener(
-          'domfactory-component-upgraded',
-          callback.bind(this)
-        );
+        this.$el.addEventListener('domfactory-component-upgraded', callback.bind(this));
       }
     },
     toggle: function toggle() {
@@ -205,20 +236,22 @@ var script = {
       this.show = false;
     },
     emitState: function emitState() {
-      this.$emit('input', this.show);
-      // Let toggle know the state of this drawer
+      this.$emit('input', this.show); // Let toggle know the state of this drawer
+
       this.$root.$emit(EVENT_STATE, this.id, this.state);
     },
     handleToggleEvt: function handleToggleEvt(target) {
       if (!!target && target !== this.id) {
-        return
+        return;
       }
+
       this.toggle();
     },
     handleCloseEvt: function handleCloseEvt(target) {
       if (!!target && target !== this.id) {
-        return
+        return;
       }
+
       this.close();
     }
   }
@@ -341,14 +374,12 @@ var __vue_staticRenderFns__ = [];
     undefined
   );
 
-//
-
 var script$1 = {
   props: {
     settings: {
       type: Object,
-      default: function default$1() {
-        return {}
+      default: function _default() {
+        return {};
       }
     },
     tag: {
@@ -363,16 +394,13 @@ var script$1 = {
   data: function data() {
     return {
       ps: null
-    }
+    };
   },
   computed: {
     localSettings: function localSettings() {
-      return Object.assign(
-        {
-          wheelPropagation: this.wheelPropagation
-        },
-        this.settings
-      )
+      return Object.assign({
+        wheelPropagation: this.wheelPropagation
+      }, this.settings);
     }
   },
   watch: {
@@ -450,23 +478,27 @@ var __vue_staticRenderFns__$1 = [];
     undefined
   );
 
-var prefixProps = function (props, prefix) {
+var prefixProps = function prefixProps(props, prefix) {
   var newProps = {};
   Object.keys(props).forEach(function (prop) {
-    newProps[(prefix + "-" + prop)] = props[prop];
+    newProps["".concat(prefix, "-").concat(prop)] = props[prop];
   });
-
-  return camelCaseKeys(newProps)
+  return camelCaseKeys(newProps);
 };
 
-//
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
+function _objectSpread(target) {
+var arguments$1 = arguments;
+ for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+handler.register('mdk-drawer-layout', drawerLayoutComponent);
 var script$2 = {
   components: {
     Drawer: Drawer,
     PerfectScrollbar: PerfectScrollbar
   },
-  props: Object.assign({}, {push: {
+  props: _objectSpread({
+    push: {
       type: Boolean,
       default: true
     },
@@ -487,30 +519,29 @@ var script$2 = {
     contentId: {
       type: String,
       default: null
-    }},
-    prefixProps(drawerProps, 'drawer')),
+    }
+  }, prefixProps(drawerProps, 'drawer')),
   mounted: function mounted() {
-    var this$1 = this;
+    var _this = this;
 
-    this.$el.addEventListener(
-      'domfactory-component-upgraded',
-      this.init.bind(this)
-    );
-    this.$nextTick(function () { return handler.upgradeElement(this$1.$el, 'mdk-drawer-layout'); });
+    this.$el.addEventListener('domfactory-component-upgraded', this.init.bind(this));
+    this.$nextTick(function () {
+      return handler.upgradeElement(_this.$el, 'mdk-drawer-layout');
+    });
   },
   beforeDestroy: function beforeDestroy() {
-    this.$el.removeEventListener(
-      'domfactory-component-upgraded',
-      this.init.bind(this)
-    );
+    this.$el.removeEventListener('domfactory-component-upgraded', this.init.bind(this));
     handler.downgradeElement(this.$el, 'mdk-drawer-layout');
   },
   methods: {
     init: function init() {
-      var this$1 = this;
-['push', 'responsiveWidth', 'fullbleed', 'hasScrollingRegion'].map(function (prop) {
-        this$1.$el.mdkDrawerLayout[prop] = this$1[prop];
-        this$1.$watch(prop, function (val) { return (this$1.$el.mdkDrawerLayout[prop] = val); });
+      var _this2 = this;
+      ['push', 'responsiveWidth', 'fullbleed', 'hasScrollingRegion'].map(function (prop) {
+        _this2.$el.mdkDrawerLayout[prop] = _this2[prop];
+
+        _this2.$watch(prop, function (val) {
+          return _this2.$el.mdkDrawerLayout[prop] = val;
+        });
       });
     }
   }
@@ -548,8 +579,7 @@ var __vue_staticRenderFns__$2 = [];
     undefined
   );
 
-//
-
+handler.register('mdk-header', headerComponent);
 var script$3 = {
   props: {
     fixed: {
@@ -583,34 +613,31 @@ var script$3 = {
   },
   computed: {
     props: function props() {
-      return ['fixed', 'disabled', 'reveals', 'condenses']
+      return ['fixed', 'disabled', 'reveals', 'condenses'];
     },
     headerEffects: function headerEffects() {
       if (this.effects) {
         var effects = isArray(this.effects) ? this.effects : [this.effects];
-        return effects.join(' ')
+        return effects.join(' ');
       }
     }
   },
   mounted: function mounted() {
-    var this$1 = this;
+    var _this = this;
 
-    this.$el.addEventListener(
-      'domfactory-component-upgraded',
-      this.init.bind(this)
-    );
-    this.$nextTick(function () { return handler.upgradeElement(this$1.$el, 'mdk-header'); });
+    this.$el.addEventListener('domfactory-component-upgraded', this.init.bind(this));
+    this.$nextTick(function () {
+      return handler.upgradeElement(_this.$el, 'mdk-header');
+    });
   },
   beforeDestroy: function beforeDestroy() {
-    var this$1 = this;
+    var _this2 = this;
 
-    this.$el.mdkHeader.eventTarget.removeEventListener('scroll', function () { return this$1.onScroll(); });
-
+    this.$el.mdkHeader.eventTarget.removeEventListener('scroll', function () {
+      return _this2.onScroll();
+    });
     handler.downgradeElement(this.$el, 'mdk-header');
-    this.$el.removeEventListener(
-      'domfactory-component-upgraded',
-      this.init.bind(this)
-    );
+    this.$el.removeEventListener('domfactory-component-upgraded', this.init.bind(this));
   },
   methods: {
     onScroll: function onScroll() {
@@ -618,15 +645,21 @@ var script$3 = {
       this.$emit('header-target-scroll', state);
     },
     init: function init() {
-      var this$1 = this;
+      var _this3 = this;
 
       this.props.map(function (prop) {
-        this$1.$el.mdkHeader[prop] = this$1[prop];
-        this$1.$watch(prop, function (val) { return (this$1.$el.mdkHeader[prop] = val); });
-      });
+        _this3.$el.mdkHeader[prop] = _this3[prop];
 
-      this.$el.mdkHeader.eventTarget.addEventListener('scroll', function () { return this$1.onScroll(); });
-      this.$nextTick(function () { return this$1.$el.mdkHeader._reset(); });
+        _this3.$watch(prop, function (val) {
+          return _this3.$el.mdkHeader[prop] = val;
+        });
+      });
+      this.$el.mdkHeader.eventTarget.addEventListener('scroll', function () {
+        return _this3.onScroll();
+      });
+      this.$nextTick(function () {
+        return _this3.$el.mdkHeader._reset();
+      });
     }
   }
 };
@@ -663,8 +696,7 @@ var __vue_staticRenderFns__$3 = [];
     undefined
   );
 
-//
-
+handler.register('mdk-box', boxComponent);
 var script$4 = {
   props: {
     disabled: {
@@ -686,36 +718,34 @@ var script$4 = {
   },
   computed: {
     props: function props() {
-      return ['disabled']
+      return ['disabled'];
     },
     boxEffects: function boxEffects() {
       if (this.effects) {
         var effects = isArray(this.effects) ? this.effects : [this.effects];
-        return effects.join(' ')
+        return effects.join(' ');
       }
     }
   },
   mounted: function mounted() {
-    var this$1 = this;
+    var _this = this;
 
-    this.$el.addEventListener(
-      'domfactory-component-upgraded',
-      this.init.bind(this)
-    );
-    this.$nextTick(function () { return handler.upgradeElement(this$1.$el, 'mdk-box'); });
+    this.$el.addEventListener('domfactory-component-upgraded', this.init.bind(this));
+    this.$nextTick(function () {
+      return handler.upgradeElement(_this.$el, 'mdk-box');
+    });
   },
   beforeDestroy: function beforeDestroy() {
-    var this$1 = this;
+    var _this2 = this;
 
     if (this.$el.mdkBox) {
-      this.$el.mdkBox.eventTarget.removeEventListener('scroll', function () { return this$1.onScroll(); });
+      this.$el.mdkBox.eventTarget.removeEventListener('scroll', function () {
+        return _this2.onScroll();
+      });
     }
 
     handler.downgradeElement(this.$el, 'mdk-box');
-    this.$el.removeEventListener(
-      'domfactory-component-upgraded',
-      this.init.bind(this)
-    );
+    this.$el.removeEventListener('domfactory-component-upgraded', this.init.bind(this));
   },
   methods: {
     onScroll: function onScroll() {
@@ -723,15 +753,21 @@ var script$4 = {
       this.$emit('header-target-scroll', state);
     },
     init: function init() {
-      var this$1 = this;
+      var _this3 = this;
 
       this.props.map(function (prop) {
-        this$1.$el.mdkBox[prop] = this$1[prop];
-        this$1.$watch(prop, function (val) { return (this$1.$el.mdkBox[prop] = val); });
-      });
+        _this3.$el.mdkBox[prop] = _this3[prop];
 
-      this.$el.mdkBox.eventTarget.addEventListener('scroll', function () { return this$1.onScroll(); });
-      this.$nextTick(function () { return this$1.$el.mdkBox._reset(); });
+        _this3.$watch(prop, function (val) {
+          return _this3.$el.mdkBox[prop] = val;
+        });
+      });
+      this.$el.mdkBox.eventTarget.addEventListener('scroll', function () {
+        return _this3.onScroll();
+      });
+      this.$nextTick(function () {
+        return _this3.$el.mdkBox._reset();
+      });
     }
   }
 };
@@ -768,8 +804,7 @@ var __vue_staticRenderFns__$4 = [];
     undefined
   );
 
-//
-
+handler.register('mdk-header-layout', headerLayoutComponent);
 var script$5 = {
   components: {
     AppHeader: AppHeader
@@ -823,42 +858,41 @@ var script$5 = {
     headerClass: 'reset'
   },
   mounted: function mounted() {
-    var this$1 = this;
+    var _this = this;
 
-    this.$el.addEventListener(
-      'domfactory-component-upgraded',
-      this.init.bind(this)
-    );
-    this.$nextTick(function () { return handler.upgradeElement(this$1.$el, 'mdk-header-layout'); });
+    this.$el.addEventListener('domfactory-component-upgraded', this.init.bind(this));
+    this.$nextTick(function () {
+      return handler.upgradeElement(_this.$el, 'mdk-header-layout');
+    });
   },
   beforeDestroy: function beforeDestroy() {
-    this.$el.removeEventListener(
-      'domfactory-component-upgraded',
-      this.init.bind(this)
-    );
+    this.$el.removeEventListener('domfactory-component-upgraded', this.init.bind(this));
     handler.downgradeElement(this.$el, 'mdk-header-layout');
   },
   methods: {
     init: function init() {
-      var this$1 = this;
+      var _this2 = this;
 
       this.$nextTick(this.reset);
       setTimeout(this.reset.bind(this), 200);
       setTimeout(this.reset.bind(this), 1000);
       this.$el.mdkHeaderLayout.fullbleed = this.fullbleed;
       this.$root.$on('reset::header-layout', this.reset);
+      this.$watch('$route', this.reset);
+      ['fullbleed'].map(function (prop) {
+        _this2.$el.mdkHeaderLayout[prop] = _this2[prop];
 
-      this.$watch('$route', this.reset)
-
-      ;['fullbleed'].map(function (prop) {
-        this$1.$el.mdkHeaderLayout[prop] = this$1[prop];
-        this$1.$watch(prop, function (val) { return (this$1.$el.mdkHeaderLayout[prop] = val); });
+        _this2.$watch(prop, function (val) {
+          return _this2.$el.mdkHeaderLayout[prop] = val;
+        });
       });
     },
     reset: function reset() {
-      var this$1 = this;
+      var _this3 = this;
 
-      this.$nextTick(function () { return this$1.$el.mdkHeaderLayout._reset(); });
+      this.$nextTick(function () {
+        return _this3.$el.mdkHeaderLayout._reset();
+      });
     },
     handleEmit: function handleEmit(type, e) {
       this.$emit(type, e);
@@ -911,12 +945,12 @@ var sidebarProps = {
     align: {
       type: String,
       default: 'start',
-      validator: function (val) { return ['start', 'end', 'left', 'right'].includes(val); }
+      validator: function validator(val) {
+        return ['start', 'end', 'left', 'right'].includes(val);
+      }
     }
   }
 };
-
-//
 
 var script$6 = {
   components: {
@@ -926,7 +960,7 @@ var script$6 = {
   computed: {
     isRTL: function isRTL() {
       if (!process.server && this.$el) {
-        return window.getComputedStyle(this.$el).direction === 'rtl'
+        return window.getComputedStyle(this.$el).direction === 'rtl';
       }
     },
     position: function position() {
@@ -944,31 +978,34 @@ var script$6 = {
       if (this.align === 'start') {
         position = isRTL ? 'right' : 'left';
       }
+
       if (this.align === 'end') {
         position = isRTL ? 'left' : 'right';
       }
 
-      return position
+      return position;
     },
     classes: function classes() {
       var classes = {};
-      classes[("sidebar-" + (this.type))] = true;
-      classes[("sidebar-" + (this.position))] = true;
+      classes["sidebar-".concat(this.type)] = true;
+      classes["sidebar-".concat(this.position)] = true;
 
       if (this.variant) {
-        this.variant.split(' ').map(function (variant) { return (classes[variant] = true); });
+        this.variant.split(' ').map(function (variant) {
+          return classes[variant] = true;
+        });
       }
 
-      return classes
+      return classes;
     }
   },
   methods: {
     update: function update() {
-      var this$1 = this;
+      var _this = this;
 
       this.$nextTick(function () {
-        if (this$1.$refs.ps) {
-          this$1.$refs.ps.update();
+        if (_this.$refs.ps) {
+          _this.$refs.ps.update();
         }
       });
     }
@@ -1089,13 +1126,14 @@ var __vue_staticRenderFns__$6 = [];
 //
 //
 //
-
+//
 var script$7 = {
+  name: 'FmvSidebarMenu',
   props: {
     menu: {
       type: Array,
-      default: function default$1() {
-        return []
+      default: function _default() {
+        return [];
       }
     },
     menuClass: {
@@ -1106,40 +1144,55 @@ var script$7 = {
   data: function data() {
     return {
       localMenu: []
-    }
+    };
   },
   watch: {
-    menu: function menu(menu$1) {
-      this.localMenu = menu$1;
-    },
-    localMenu: 'matchRoute',
     '$route': 'matchRoute'
   },
   created: function created() {
-    var this$1 = this;
+    var _this = this;
 
+    this.setMenu(this.menu);
     this.$root.$on('bv::collapse::state', function (collapseId, open) {
-      this$1.emitState(collapseId, false, open);
+      _this.emitState(collapseId, false, open);
     });
   },
-  mounted: function mounted() {
-    this.localMenu = this.menu;
-  },
   methods: {
+    setMenu: function setMenu(menu) {
+      try {
+        this.localMenu = menu.map(function (item) {
+          return {
+            id: item.id,
+            label: item.label,
+            icon: !!item.icon ? {
+              id: item.icon.id,
+              type: item.icon.type
+            } : null,
+            open: item.open,
+            click: item.click,
+            route: item.route,
+            exact: item.exact,
+            children: item.children
+          };
+        });
+        this.matchRoute();
+      } catch (e) {
+        console.warn("\n          Invalid sidebar menu structure. Valid example:\n          [\n            {\n              id: <String> 'auth',\n              label: <String> 'Auth',\n              icon: <Object> {\n                id: 'md-icon',\n                type: 'tune',\n              },\n              open: <Boolean> false,\n              click: <Function> function(event){},\n              route: <String|Object>,\n              exact: <Boolean> true,\n              children: <Array> [\n                {\n                  label: <String> 'Sign up',\n                  route: <String|Object> '/signup'\n                }\n              ]\n            }\n          ]\n        ");
+      }
+    },
     matchRoute: function matchRoute() {
-      var this$1 = this;
+      var _this2 = this;
 
       this.$nextTick(function () {
-        this$1.localMenu.map(function (item) {
-          var open = this$1.routeMatches(item);
-          this$1[
-            open ? 'open' : 'close'
-          ](item);
+        _this2.localMenu.map(function (item) {
+          var open = _this2.routeMatches(item);
+
+          _this2[open ? 'open' : 'close'](item);
         });
       });
     },
     open: function open(target) {
-      if (!target.open) {
+      if (target.open !== true) {
         var targetId = this.getId(target);
         this.$set(target, 'open', true);
         this.$emit('open', targetId);
@@ -1160,37 +1213,38 @@ var script$7 = {
       this.$root.$emit('fmv::sidebar-menu::state', state);
     },
     getId: function getId(item) {
-      return ("sm" + (item.id))
+      return "sm".concat(item.id);
     },
     routeMatches: function routeMatches(item) {
-      var this$1 = this;
+      var _this3 = this;
 
       var route;
+
       if (process.server) {
-        return false
+        return false;
       }
+
       try {
         item.children.map(function (child) {
           if (typeof child.route === 'string') {
-            route = route || this$1.$route.name === child.route;
-            route = route || this$1.$route.path === child.route;
+            route = route || _this3.$route.name === child.route;
+            route = route || _this3.$route.path === child.route;
 
-            if (this$1.$i18n) {
-              this$1.$i18n.locales.map(function (locale) {
-                var localeRoute = (child.route) + "__" + (locale.code);
-
-                route = route || this$1.$route.name === localeRoute;
-                route = route || this$1.$route.path === localeRoute;
+            if (_this3.$i18n) {
+              _this3.$i18n.locales.map(function (locale) {
+                var localeRoute = "".concat(child.route, "__").concat(locale.code);
+                route = route || _this3.$route.name === localeRoute;
+                route = route || _this3.$route.path === localeRoute;
               });
             }
           }
-          
-          route = route || this$1.$route.name === child.route.name;
-          route = route || this$1.$route.path === child.route.path;
-        });
-      } catch(e) {}
 
-      return route
+          route = route || _this3.$route.name === child.route.name;
+          route = route || _this3.$route.path === child.route.path;
+        });
+      } catch (e) {}
+
+      return route;
     },
     onClick: function onClick(e, callback) {
       if (callback) {
@@ -1205,7 +1259,7 @@ var script$7 = {
 var __vue_script__$7 = script$7;
 
 /* template */
-var __vue_render__$7 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(_vm.menu)?_c('ul',{staticClass:"sidebar-menu",class:_vm.menuClass},[_vm._l((_vm.localMenu),function(item,itemIdx){return [(item.children !== undefined && item.children.length)?[_c('li',{key:("smi-collapse-" + itemIdx),staticClass:"sidebar-menu-item",class:{ 'open': item.open }},[_c('a',{directives:[{name:"b-toggle",rawName:"v-b-toggle",value:(_vm.getId(item)),expression:"getId(item)"}],staticClass:"sidebar-menu-button",attrs:{"href":"#"}},[(!!item.icon)?_c(item.icon.type,{tag:"component",staticClass:"sidebar-menu-icon",class:{ 
+var __vue_render__$7 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(_vm.menu)?_c('ul',{staticClass:"sidebar-menu",class:_vm.menuClass},[_vm._l((_vm.localMenu),function(item,itemIdx){return [(item.children !== undefined && item.children.length)?[_c('li',{key:("smi-collapse-" + itemIdx),staticClass:"sidebar-menu-item",class:{ 'open': item.open }},[_c('a',{directives:[{name:"b-toggle",rawName:"v-b-toggle",value:(_vm.getId(item)),expression:"getId(item)"}],staticClass:"sidebar-menu-button",attrs:{"href":"#"},on:{"click":function($event){$event.preventDefault();}}},[(!!item.icon)?_c(item.icon.type,{tag:"component",staticClass:"sidebar-menu-icon",class:{ 
                 'sidebar-menu-icon--left': item.icon.align === undefined || item.icon.align === 'left',
                 'sidebar-menu-icon--right': item.icon.align === 'right',
               },domProps:{"textContent":_vm._s(item.icon.id)}}):_vm._e(),_vm._v("\n            "+_vm._s(item.label)+"\n            "),_c('span',{staticClass:"ml-auto sidebar-menu-toggle-icon"})],1),_vm._v(" "),_c('b-collapse',{staticClass:"sidebar-submenu sm-indent",attrs:{"id":_vm.getId(item),"tag":"ul"},on:{"shown":function($event){_vm.emitState(_vm.getId(item), true);},"hidden":function($event){_vm.emitState(_vm.getId(item), false);}},model:{value:(item.open),callback:function ($$v) {_vm.$set(item, "open", $$v);},expression:"item.open"}},_vm._l((item.children),function(child,idx){return _c('router-link',{key:("smi-" + idx + "-" + (_vm.$store.state.locale)),staticClass:"sidebar-menu-item",attrs:{"to":child.route,"tag":"li","exact":""}},[_c('a',{staticClass:"sidebar-menu-button"},[_c('span',{staticClass:"sidebar-menu-text"},[_vm._v(_vm._s(child.label))])])])}),1)],1)]:_c(item.route ? 'router-link' : 'li',{key:("smi-" + itemIdx + "-" + (_vm.$store.state.locale)),tag:"component",staticClass:"sidebar-menu-item",attrs:{"to":item.route ? item.route : {},"tag":"li","exact":item.exact !== false},on:{"click":function($event){return _vm.onClick($event, item.click)}}},[_c('a',{staticClass:"sidebar-menu-button"},[(!!item.icon)?_c(item.icon.type,{tag:"component",staticClass:"sidebar-menu-icon sidebar-menu-icon--left",domProps:{"textContent":_vm._s(item.icon.id)}}):_vm._e(),_vm._v(" "),_c('span',{staticClass:"sidebar-menu-text",domProps:{"textContent":_vm._s(item.label)}}),_vm._v(" "),(item.badge)?_c('b-badge',{staticClass:"sidebar-menu-badge ml-auto",attrs:{"variant":item.badge.variant},domProps:{"textContent":_vm._s(item.badge.label)}}):_vm._e()],1)])]})],2):_vm._e()])};
@@ -1236,61 +1290,52 @@ var __vue_staticRenderFns__$7 = [];
     undefined
   );
 
-// Are we client side?
-var inBrowser = typeof window !== 'undefined';
+var inBrowser = typeof window !== 'undefined'; // target listen types
 
-// target listen types
-var listenTypes = { click: true };
+var listenTypes = {
+  click: true
+}; // Property key for handler storage
 
-// Property key for handler storage
-var BVT = '__BV_toggle__';
+var BVT = '__BV_toggle__'; // Emitted Control Event for collapse (emitted to collapse)
 
-// Emitted Control Event for collapse (emitted to collapse)
-var EVENT_TOGGLE$1 = 'fm::toggle::drawer';
+var EVENT_TOGGLE$1 = 'fm::toggle::drawer'; // Listen to Event for toggle state update (Emited by collapse)
 
-// Listen to Event for toggle state update (Emited by collapse)
 var EVENT_STATE$1 = 'fm::drawer::state';
-
 var toggle = {
   bind: function bind(el, binding, vnode) {
-    var targets = target(
-      vnode,
-      binding,
-      listenTypes,
-      function (ref) {
-        var targets = ref.targets;
-        var vnode = ref.vnode;
-
-        targets.forEach(function (target) {
-          vnode.context.$root.$emit(EVENT_TOGGLE$1, target);
-        });
-      }
-    );
+    var targets = target(vnode, binding, listenTypes, function (_ref) {
+      var targets = _ref.targets,
+          vnode = _ref.vnode;
+      targets.forEach(function (target) {
+        vnode.context.$root.$emit(EVENT_TOGGLE$1, target);
+      });
+    });
 
     if (inBrowser && vnode.context && targets.length > 0) {
       // Add aria attributes to element
       setAttr(el, 'aria-controls', targets.join(' '));
       setAttr(el, 'aria-expanded', 'false');
+
       if (el.tagName !== 'BUTTON') {
         // If element is not a button, we add `role="button"` for accessibility
         setAttr(el, 'role', 'button');
-      }
+      } // Toggle state hadnler, stored on element
 
-      // Toggle state hadnler, stored on element
+
       el[BVT] = function toggleDirectiveHandler(id, state) {
         if (targets.indexOf(id) !== -1) {
           // Set aria-expanded state
-          setAttr(el, 'aria-expanded', state.show ? 'true' : 'false');
-          // Set/Clear 'active' class state
+          setAttr(el, 'aria-expanded', state.show ? 'true' : 'false'); // Set/Clear 'active' class state
+
           if (state.show) {
             addClass(el, 'active');
           } else {
             removeClass(el, 'active');
           }
         }
-      };
+      }; // Listen for toggle state changes
 
-      // Listen for toggle state changes
+
       vnode.context.$root.$on(EVENT_STATE$1, el[BVT]);
     }
   },
@@ -1309,7 +1354,6 @@ var utils = {
   drawerProps: drawerProps,
   sidebarProps: sidebarProps.props
 };
-
 var mixins = {
   listenOnRootMixin: listenOnRootMixin
 };

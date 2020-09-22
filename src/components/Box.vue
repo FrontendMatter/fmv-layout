@@ -22,7 +22,9 @@
 
 <script>
 import { handler } from 'dom-factory'
-import 'material-design-kit/dist/box.js'
+import { boxComponent } from 'material-design-kit'
+handler.register('mdk-box', boxComponent)
+
 import { isArray } from '../utils/array'
 
 export default {

@@ -13,7 +13,9 @@
 
 <script>
 import { handler } from 'dom-factory'
-import 'material-design-kit/dist/drawer.js'
+import { drawerComponent } from 'material-design-kit'
+handler.register('mdk-drawer', drawerComponent)
+
 import listenOnRootMixin from '../mixins/listen-on-root'
 import { drawerProps } from './Drawer.props'
 

@@ -21,7 +21,9 @@
 
 <script>
 import { handler } from 'dom-factory'
-import 'material-design-kit/dist/header.js'
+import { headerComponent } from 'material-design-kit'
+handler.register('mdk-header', headerComponent)
+
 import { isArray } from '../utils/array'
 
 export default {

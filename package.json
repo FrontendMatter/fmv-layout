@@ -1,6 +1,7 @@
 {
   "name": "fmv-layout",
-  "version": "1.2.0",
+  "version": "2.0.0",
+  "description": "Layout Vue Components",
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
     "watch": "rollup -c --watch"
@@ -9,9 +10,17 @@
   "module": "dist/fmv-layout.esm.js",
   "author": "FrontendMatter <contact@frontendmatter.com> (http://www.frontendmatter.com)",
   "license": "UNLICENSED",
+  "dependencies": {
+    "camelcase-keys": "^6.0.1"
+  },
   "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-transform-runtime": "^7.11.5",
+    "@babel/preset-env": "^7.11.5",
+    "@rollup/plugin-babel": "^5.2.1",
+    "core-js": "^3.6.5",
     "dom-factory": "^1.0.3",
-    "material-design-kit": "^1.0.2",
+    "material-design-kit": "^2.0.0",
     "node-sass": "^4.11.0",
     "perfect-scrollbar": "^1.4.0",
     "rollup": "^1.21.2",
@@ -26,11 +35,10 @@
   },
   "peerDependencies": {
     "dom-factory": "^1.0.3",
-    "material-design-kit": "^1.0.2",
+    "material-design-kit": "^2.0.0",
     "perfect-scrollbar": "^1.4.0",
     "vue": "^2.6.10"
   },
-  "description": "MDK Layout Vue Components",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FrontendMatter/fmv-layout.git"
@@ -38,8 +46,5 @@
   "bugs": {
     "url": "https://github.com/FrontendMatter/fmv-layout/issues"
   },
-  "homepage": "https://github.com/FrontendMatter/fmv-layout#readme",
-  "dependencies": {
-    "camelcase-keys": "^6.0.1"
-  }
+  "homepage": "https://github.com/FrontendMatter/fmv-layout#readme"
 }

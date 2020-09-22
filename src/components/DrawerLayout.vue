@@ -36,7 +36,9 @@
 
 <script>
 import { handler } from 'dom-factory'
-import 'material-design-kit/dist/drawer-layout.js'
+import { drawerLayoutComponent } from 'material-design-kit'
+handler.register('mdk-drawer-layout', drawerLayoutComponent)
+
 import Drawer from './Drawer.vue'
 import PerfectScrollbar from './PerfectScrollbar.vue'
 import { drawerProps } from './Drawer.props'

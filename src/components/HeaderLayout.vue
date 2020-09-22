@@ -34,7 +34,9 @@
 
 <script>
 import { handler } from 'dom-factory'
-import 'material-design-kit/dist/header-layout.js'
+import { headerLayoutComponent } from 'material-design-kit'
+handler.register('mdk-header-layout', headerLayoutComponent)
+
 import AppHeader from './Header.vue'
 
 export default {
