@@ -14,7 +14,7 @@ import 'core-js/modules/es.object.keys';
 import 'core-js/modules/web.dom-collections.for-each';
 import _defineProperty from '@babel/runtime/helpers/defineProperty';
 import 'core-js/modules/es.object.assign';
-import PerfectScrollbar$1 from 'perfect-scrollbar';
+import PerfectScrollbar from 'perfect-scrollbar';
 import camelCaseKeys from 'camelcase-keys';
 import 'core-js/modules/es.array.join';
 import 'core-js/modules/es.regexp.exec';
@@ -288,7 +288,7 @@ function normalizeComponent(template, style, script, scopeId, isFunctionalTempla
 
   if (moduleIdentifier) {
     // server build
-    hook = function hook(context) {
+    hook = function (context) {
       // 2.3 injection
       context = context || // cached call
       this.$vnode && this.$vnode.ssrContext || // stateful
@@ -314,8 +314,8 @@ function normalizeComponent(template, style, script, scopeId, isFunctionalTempla
 
     options._ssrRegister = hook;
   } else if (style) {
-    hook = shadowMode ? function () {
-      style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
+    hook = shadowMode ? function (context) {
+      style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
     } : function (context) {
       style.call(this, createInjector(context));
     };
@@ -340,8 +340,6 @@ function normalizeComponent(template, style, script, scopeId, isFunctionalTempla
   return script;
 }
 
-var normalizeComponent_1 = normalizeComponent;
-
 /* script */
 var __vue_script__ = script;
 
@@ -361,15 +359,19 @@ var __vue_staticRenderFns__ = [];
   
   /* style inject SSR */
   
+  /* style inject shadow dom */
+  
 
   
-  var Drawer = normalizeComponent_1(
+  var __vue_component__ = /*#__PURE__*/normalizeComponent(
     { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
     __vue_inject_styles__,
     __vue_script__,
     __vue_scope_id__,
     __vue_is_functional_template__,
     __vue_module_identifier__,
+    false,
+    undefined,
     undefined,
     undefined
   );
@@ -435,7 +437,7 @@ var script$1 = {
     },
     init: function init() {
       if (!this.ps) {
-        this.ps = new PerfectScrollbar$1(this.$el, this.localSettings);
+        this.ps = new PerfectScrollbar(this.$el, this.localSettings);
       } else {
         this.update();
       }
@@ -465,15 +467,19 @@ var __vue_staticRenderFns__$1 = [];
   
   /* style inject SSR */
   
+  /* style inject shadow dom */
+  
 
   
-  var PerfectScrollbar = normalizeComponent_1(
+  var __vue_component__$1 = /*#__PURE__*/normalizeComponent(
     { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
     __vue_inject_styles__$1,
     __vue_script__$1,
     __vue_scope_id__$1,
     __vue_is_functional_template__$1,
     __vue_module_identifier__$1,
+    false,
+    undefined,
     undefined,
     undefined
   );
@@ -494,8 +500,8 @@ var arguments$1 = arguments;
 handler.register('mdk-drawer-layout', drawerLayoutComponent);
 var script$2 = {
   components: {
-    Drawer: Drawer,
-    PerfectScrollbar: PerfectScrollbar
+    Drawer: __vue_component__,
+    PerfectScrollbar: __vue_component__$1
   },
   props: _objectSpread({
     push: {
@@ -566,15 +572,19 @@ var __vue_staticRenderFns__$2 = [];
   
   /* style inject SSR */
   
+  /* style inject shadow dom */
+  
 
   
-  var DrawerLayout = normalizeComponent_1(
+  var __vue_component__$2 = /*#__PURE__*/normalizeComponent(
     { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
     __vue_inject_styles__$2,
     __vue_script__$2,
     __vue_scope_id__$2,
     __vue_is_functional_template__$2,
     __vue_module_identifier__$2,
+    false,
+    undefined,
     undefined,
     undefined
   );
@@ -683,15 +693,19 @@ var __vue_staticRenderFns__$3 = [];
   
   /* style inject SSR */
   
+  /* style inject shadow dom */
+  
 
   
-  var AppHeader = normalizeComponent_1(
+  var __vue_component__$3 = /*#__PURE__*/normalizeComponent(
     { render: __vue_render__$3, staticRenderFns: __vue_staticRenderFns__$3 },
     __vue_inject_styles__$3,
     __vue_script__$3,
     __vue_scope_id__$3,
     __vue_is_functional_template__$3,
     __vue_module_identifier__$3,
+    false,
+    undefined,
     undefined,
     undefined
   );
@@ -791,15 +805,19 @@ var __vue_staticRenderFns__$4 = [];
   
   /* style inject SSR */
   
+  /* style inject shadow dom */
+  
 
   
-  var Box = normalizeComponent_1(
+  var __vue_component__$4 = /*#__PURE__*/normalizeComponent(
     { render: __vue_render__$4, staticRenderFns: __vue_staticRenderFns__$4 },
     __vue_inject_styles__$4,
     __vue_script__$4,
     __vue_scope_id__$4,
     __vue_is_functional_template__$4,
     __vue_module_identifier__$4,
+    false,
+    undefined,
     undefined,
     undefined
   );
@@ -807,7 +825,7 @@ var __vue_staticRenderFns__$4 = [];
 handler.register('mdk-header-layout', headerLayoutComponent);
 var script$5 = {
   components: {
-    AppHeader: AppHeader
+    AppHeader: __vue_component__$3
   },
   props: {
     fullbleed: {
@@ -919,15 +937,19 @@ var __vue_staticRenderFns__$5 = [];
   
   /* style inject SSR */
   
+  /* style inject shadow dom */
+  
 
   
-  var HeaderLayout = normalizeComponent_1(
+  var __vue_component__$5 = /*#__PURE__*/normalizeComponent(
     { render: __vue_render__$5, staticRenderFns: __vue_staticRenderFns__$5 },
     __vue_inject_styles__$5,
     __vue_script__$5,
     __vue_scope_id__$5,
     __vue_is_functional_template__$5,
     __vue_module_identifier__$5,
+    false,
+    undefined,
     undefined,
     undefined
   );
@@ -954,7 +976,7 @@ var sidebarProps = {
 
 var script$6 = {
   components: {
-    PerfectScrollbar: PerfectScrollbar
+    PerfectScrollbar: __vue_component__$1
   },
   mixins: [sidebarProps],
   computed: {
@@ -1031,15 +1053,19 @@ var __vue_staticRenderFns__$6 = [];
   
   /* style inject SSR */
   
+  /* style inject shadow dom */
+  
 
   
-  var Sidebar = normalizeComponent_1(
+  var __vue_component__$6 = /*#__PURE__*/normalizeComponent(
     { render: __vue_render__$6, staticRenderFns: __vue_staticRenderFns__$6 },
     __vue_inject_styles__$6,
     __vue_script__$6,
     __vue_scope_id__$6,
     __vue_is_functional_template__$6,
     __vue_module_identifier__$6,
+    false,
+    undefined,
     undefined,
     undefined
   );
@@ -1277,15 +1303,19 @@ var __vue_staticRenderFns__$7 = [];
   
   /* style inject SSR */
   
+  /* style inject shadow dom */
+  
 
   
-  var SidebarMenu = normalizeComponent_1(
+  var __vue_component__$7 = /*#__PURE__*/normalizeComponent(
     { render: __vue_render__$7, staticRenderFns: __vue_staticRenderFns__$7 },
     __vue_inject_styles__$7,
     __vue_script__$7,
     __vue_scope_id__$7,
     __vue_is_functional_template__$7,
     __vue_module_identifier__$7,
+    false,
+    undefined,
     undefined,
     undefined
   );
@@ -1358,4 +1388,4 @@ var mixins = {
   listenOnRootMixin: listenOnRootMixin
 };
 
-export { Box as FmvBox, Drawer as FmvDrawer, DrawerLayout as FmvDrawerLayout, AppHeader as FmvHeader, HeaderLayout as FmvHeaderLayout, PerfectScrollbar as FmvPerfectScrollbar, Sidebar as FmvSidebar, SidebarMenu as FmvSidebarMenu, toggle as FmvToggle, mixins, utils };
+export { __vue_component__$4 as FmvBox, __vue_component__ as FmvDrawer, __vue_component__$2 as FmvDrawerLayout, __vue_component__$3 as FmvHeader, __vue_component__$5 as FmvHeaderLayout, __vue_component__$1 as FmvPerfectScrollbar, __vue_component__$6 as FmvSidebar, __vue_component__$7 as FmvSidebarMenu, toggle as FmvToggle, mixins, utils };

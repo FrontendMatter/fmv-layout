@@ -1,13 +1,13 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('dom-factory'), require('material-design-kit'), require('core-js/modules/es.array.concat'), require('core-js/modules/es.object.to-string'), require('core-js/modules/es.regexp.to-string'), require('core-js/modules/es.array.includes'), require('core-js/modules/es.symbol'), require('core-js/modules/es.array.filter'), require('core-js/modules/es.array.for-each'), require('core-js/modules/es.array.map'), require('core-js/modules/es.object.get-own-property-descriptor'), require('core-js/modules/es.object.get-own-property-descriptors'), require('core-js/modules/es.object.keys'), require('core-js/modules/web.dom-collections.for-each'), require('@babel/runtime/helpers/defineProperty'), require('core-js/modules/es.object.assign'), require('perfect-scrollbar'), require('camelcase-keys'), require('core-js/modules/es.array.join'), require('core-js/modules/es.regexp.exec'), require('core-js/modules/es.string.split'), require('core-js/modules/es.function.name'), require('core-js/modules/es.array.index-of'), require('bootstrap-vue/esm/utils/target'), require('bootstrap-vue/esm/utils/dom')) :
   typeof define === 'function' && define.amd ? define(['exports', 'dom-factory', 'material-design-kit', 'core-js/modules/es.array.concat', 'core-js/modules/es.object.to-string', 'core-js/modules/es.regexp.to-string', 'core-js/modules/es.array.includes', 'core-js/modules/es.symbol', 'core-js/modules/es.array.filter', 'core-js/modules/es.array.for-each', 'core-js/modules/es.array.map', 'core-js/modules/es.object.get-own-property-descriptor', 'core-js/modules/es.object.get-own-property-descriptors', 'core-js/modules/es.object.keys', 'core-js/modules/web.dom-collections.for-each', '@babel/runtime/helpers/defineProperty', 'core-js/modules/es.object.assign', 'perfect-scrollbar', 'camelcase-keys', 'core-js/modules/es.array.join', 'core-js/modules/es.regexp.exec', 'core-js/modules/es.string.split', 'core-js/modules/es.function.name', 'core-js/modules/es.array.index-of', 'bootstrap-vue/esm/utils/target', 'bootstrap-vue/esm/utils/dom'], factory) :
-  (global = global || self, factory(global.FmvLayout = {}, global.domFactory, global.MDK, null, null, null, null, null, null, null, null, null, null, null, null, global._defineProperty, null, global.PerfectScrollbar$1, global.camelCaseKeys, null, null, null, null, null, global.target, global.dom));
-}(this, function (exports, domFactory, materialDesignKit, es_array_concat, es_object_toString, es_regexp_toString, es_array_includes, es_symbol, es_array_filter, es_array_forEach, es_array_map, es_object_getOwnPropertyDescriptor, es_object_getOwnPropertyDescriptors, es_object_keys, web_domCollections_forEach, _defineProperty, es_object_assign, PerfectScrollbar$1, camelCaseKeys, es_array_join, es_regexp_exec, es_string_split, es_function_name, es_array_indexOf, target, dom) { 'use strict';
+  (global = global || self, factory(global.FmvLayout = {}, global.domFactory, global.MDK, null, null, null, null, null, null, null, null, null, null, null, null, global._defineProperty, null, global.PerfectScrollbar, global.camelCaseKeys, null, null, null, null, null, global.target, global.dom));
+}(this, (function (exports, domFactory, materialDesignKit, es_array_concat, es_object_toString, es_regexp_toString, es_array_includes, es_symbol, es_array_filter, es_array_forEach, es_array_map, es_object_getOwnPropertyDescriptor, es_object_getOwnPropertyDescriptors, es_object_keys, web_domCollections_forEach, _defineProperty, es_object_assign, PerfectScrollbar, camelCaseKeys, es_array_join, es_regexp_exec, es_string_split, es_function_name, es_array_indexOf, target, dom) { 'use strict';
 
-  _defineProperty = _defineProperty && _defineProperty.hasOwnProperty('default') ? _defineProperty['default'] : _defineProperty;
-  PerfectScrollbar$1 = PerfectScrollbar$1 && PerfectScrollbar$1.hasOwnProperty('default') ? PerfectScrollbar$1['default'] : PerfectScrollbar$1;
-  camelCaseKeys = camelCaseKeys && camelCaseKeys.hasOwnProperty('default') ? camelCaseKeys['default'] : camelCaseKeys;
-  target = target && target.hasOwnProperty('default') ? target['default'] : target;
+  _defineProperty = _defineProperty && Object.prototype.hasOwnProperty.call(_defineProperty, 'default') ? _defineProperty['default'] : _defineProperty;
+  PerfectScrollbar = PerfectScrollbar && Object.prototype.hasOwnProperty.call(PerfectScrollbar, 'default') ? PerfectScrollbar['default'] : PerfectScrollbar;
+  camelCaseKeys = camelCaseKeys && Object.prototype.hasOwnProperty.call(camelCaseKeys, 'default') ? camelCaseKeys['default'] : camelCaseKeys;
+  target = target && Object.prototype.hasOwnProperty.call(target, 'default') ? target['default'] : target;
 
   if (!Array.isArray) {
     Array.isArray = function (arg) {
@@ -273,7 +273,7 @@
 
     if (moduleIdentifier) {
       // server build
-      hook = function hook(context) {
+      hook = function (context) {
         // 2.3 injection
         context = context || // cached call
         this.$vnode && this.$vnode.ssrContext || // stateful
@@ -299,8 +299,8 @@
 
       options._ssrRegister = hook;
     } else if (style) {
-      hook = shadowMode ? function () {
-        style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
+      hook = shadowMode ? function (context) {
+        style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
       } : function (context) {
         style.call(this, createInjector(context));
       };
@@ -325,8 +325,6 @@
     return script;
   }
 
-  var normalizeComponent_1 = normalizeComponent;
-
   /* script */
   var __vue_script__ = script;
 
@@ -346,15 +344,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Drawer = normalizeComponent_1(
+    var __vue_component__ = /*#__PURE__*/normalizeComponent(
       { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
       __vue_inject_styles__,
       __vue_script__,
       __vue_scope_id__,
       __vue_is_functional_template__,
       __vue_module_identifier__,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -420,7 +422,7 @@
       },
       init: function init() {
         if (!this.ps) {
-          this.ps = new PerfectScrollbar$1(this.$el, this.localSettings);
+          this.ps = new PerfectScrollbar(this.$el, this.localSettings);
         } else {
           this.update();
         }
@@ -450,15 +452,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var PerfectScrollbar = normalizeComponent_1(
+    var __vue_component__$1 = /*#__PURE__*/normalizeComponent(
       { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
       __vue_inject_styles__$1,
       __vue_script__$1,
       __vue_scope_id__$1,
       __vue_is_functional_template__$1,
       __vue_module_identifier__$1,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -479,8 +485,8 @@
   domFactory.handler.register('mdk-drawer-layout', materialDesignKit.drawerLayoutComponent);
   var script$2 = {
     components: {
-      Drawer: Drawer,
-      PerfectScrollbar: PerfectScrollbar
+      Drawer: __vue_component__,
+      PerfectScrollbar: __vue_component__$1
     },
     props: _objectSpread({
       push: {
@@ -551,15 +557,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var DrawerLayout = normalizeComponent_1(
+    var __vue_component__$2 = /*#__PURE__*/normalizeComponent(
       { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
       __vue_inject_styles__$2,
       __vue_script__$2,
       __vue_scope_id__$2,
       __vue_is_functional_template__$2,
       __vue_module_identifier__$2,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -668,15 +678,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var AppHeader = normalizeComponent_1(
+    var __vue_component__$3 = /*#__PURE__*/normalizeComponent(
       { render: __vue_render__$3, staticRenderFns: __vue_staticRenderFns__$3 },
       __vue_inject_styles__$3,
       __vue_script__$3,
       __vue_scope_id__$3,
       __vue_is_functional_template__$3,
       __vue_module_identifier__$3,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -776,15 +790,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Box = normalizeComponent_1(
+    var __vue_component__$4 = /*#__PURE__*/normalizeComponent(
       { render: __vue_render__$4, staticRenderFns: __vue_staticRenderFns__$4 },
       __vue_inject_styles__$4,
       __vue_script__$4,
       __vue_scope_id__$4,
       __vue_is_functional_template__$4,
       __vue_module_identifier__$4,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -792,7 +810,7 @@
   domFactory.handler.register('mdk-header-layout', materialDesignKit.headerLayoutComponent);
   var script$5 = {
     components: {
-      AppHeader: AppHeader
+      AppHeader: __vue_component__$3
     },
     props: {
       fullbleed: {
@@ -904,15 +922,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var HeaderLayout = normalizeComponent_1(
+    var __vue_component__$5 = /*#__PURE__*/normalizeComponent(
       { render: __vue_render__$5, staticRenderFns: __vue_staticRenderFns__$5 },
       __vue_inject_styles__$5,
       __vue_script__$5,
       __vue_scope_id__$5,
       __vue_is_functional_template__$5,
       __vue_module_identifier__$5,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -939,7 +961,7 @@
 
   var script$6 = {
     components: {
-      PerfectScrollbar: PerfectScrollbar
+      PerfectScrollbar: __vue_component__$1
     },
     mixins: [sidebarProps],
     computed: {
@@ -1016,15 +1038,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var Sidebar = normalizeComponent_1(
+    var __vue_component__$6 = /*#__PURE__*/normalizeComponent(
       { render: __vue_render__$6, staticRenderFns: __vue_staticRenderFns__$6 },
       __vue_inject_styles__$6,
       __vue_script__$6,
       __vue_scope_id__$6,
       __vue_is_functional_template__$6,
       __vue_module_identifier__$6,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -1262,15 +1288,19 @@
     
     /* style inject SSR */
     
+    /* style inject shadow dom */
+    
 
     
-    var SidebarMenu = normalizeComponent_1(
+    var __vue_component__$7 = /*#__PURE__*/normalizeComponent(
       { render: __vue_render__$7, staticRenderFns: __vue_staticRenderFns__$7 },
       __vue_inject_styles__$7,
       __vue_script__$7,
       __vue_scope_id__$7,
       __vue_is_functional_template__$7,
       __vue_module_identifier__$7,
+      false,
+      undefined,
       undefined,
       undefined
     );
@@ -1343,18 +1373,18 @@
     listenOnRootMixin: listenOnRootMixin
   };
 
-  exports.FmvBox = Box;
-  exports.FmvDrawer = Drawer;
-  exports.FmvDrawerLayout = DrawerLayout;
-  exports.FmvHeader = AppHeader;
-  exports.FmvHeaderLayout = HeaderLayout;
-  exports.FmvPerfectScrollbar = PerfectScrollbar;
-  exports.FmvSidebar = Sidebar;
-  exports.FmvSidebarMenu = SidebarMenu;
+  exports.FmvBox = __vue_component__$4;
+  exports.FmvDrawer = __vue_component__;
+  exports.FmvDrawerLayout = __vue_component__$2;
+  exports.FmvHeader = __vue_component__$3;
+  exports.FmvHeaderLayout = __vue_component__$5;
+  exports.FmvPerfectScrollbar = __vue_component__$1;
+  exports.FmvSidebar = __vue_component__$6;
+  exports.FmvSidebarMenu = __vue_component__$7;
   exports.FmvToggle = toggle;
   exports.mixins = mixins;
   exports.utils = utils;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+})));
