@@ -1,20 +1,30 @@
+
 import vue from 'rollup-plugin-vue'
-import alias from 'rollup-plugin-alias'
+import alias from '@rollup/plugin-alias'
+import resolve from '@rollup/plugin-node-resolve'
 import peerDepsExternal from 'rollup-plugin-peer-deps-external'
-import buble from 'rollup-plugin-buble'
-import commonjs from 'rollup-plugin-commonjs'
+import commonjs from '@rollup/plugin-commonjs'
 import css from 'rollup-plugin-css-only'
 import babel from '@rollup/plugin-babel'
+import { terser } from 'rollup-plugin-terser'
+
+const path = require('path')
+const customResolver = resolve({
+  extensions: ['.js', '.vue']
+})
 
 const plugins = [
   peerDepsExternal(),
   alias({
-    resolve: ['.js', '.vue'],
-    '~': __dirname + '/src'
+    entries: [
+      {
+        find: '~',
+        replacement: path.resolve(__dirname, 'src')
+      }
+    ]
   }),
-  babel({
-    babelHelpers: 'runtime',
-    skipPreflightCheck: true
+  resolve({
+    extensions: ['.js', '.vue']
   }),
   commonjs(),
   css({ 
@@ -29,13 +39,11 @@ const plugins = [
         }
       }
     }
-  }),
-  buble({
-    objectAssign: 'Object.assign'
   })
 ]
 
 export default [
+  // ESM
   {
     input: 'src/index.js',
     output: {
@@ -43,8 +51,10 @@ export default [
       file: 'dist/fmv-layout.esm.js'
     },
     plugins,
-    external: [/@babel\/runtime/]
+    external: []
   },
+
+  // Browser UMD
   {
     input: 'src/index.js',
     output: {
@@ -52,10 +62,19 @@ export default [
       name: 'FmvLayout',
       file: 'dist/fmv-layout.umd.js',
       globals: {
-        'material-design-kit': 'MDK'
+        'material-design-kit': 'MDK',
+        'dom-factory': 'domFactory'
       }
     },
-    plugins: plugins,
+    plugins: [
+      ...plugins,
+      babel({
+        babelHelpers: 'bundled',
+        skipPreflightCheck: true,
+        exclude: 'node_modules/**'
+      }),
+      terser()
+    ],
     external: [/@babel\/runtime/]
   }
 ]

@@ -102,10 +102,23 @@ export default {
     }
   },
   watch: {
-    '$route': 'matchRoute'
+    '$route': {
+      deep: true,
+      handler() {
+        this.matchRoute()
+      }
+    },
+    '$root.$i18n.locale': {
+      handler(val, oldVal) {
+        if (val !== oldVal) {
+          this.setMenu(this.menu)
+        }
+      }
+    }
   },
   created() {
     this.setMenu(this.menu)
+    this.$root.$on('fmv::sidebar-menu::reload', () => this.setMenu(this.menu))
     this.$root.$on('bv::collapse::state', (collapseId, open) => {
       this.emitState(collapseId, false, open)
     })
@@ -220,7 +233,7 @@ export default {
     onClick(e, callback) {
       if (callback) {
         e.preventDefault()
-        callback()
+        callback(e)
       }
     }
   }
