@@ -41,7 +41,7 @@
                 :to="child.route"
                 tag="li"
                 class="sidebar-menu-item"
-                exact>
+                :exact="child.exact">
                 <a class="sidebar-menu-button">
                   <span class="sidebar-menu-text">{{ child.label }}</span>
                 </a>
@@ -58,7 +58,7 @@
           @click="onClick($event, item.click)"
           class="sidebar-menu-item"
           tag="li"
-          :exact="item.exact !== false">
+          :exact="item.exact">
           <a class="sidebar-menu-button">
             <component
               v-if="!!item.icon" 
