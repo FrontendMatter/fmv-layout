@@ -1629,6 +1629,8 @@ const boxComponent = (element) => ({
 
 handler.register(MODULE$1, boxComponent);
 
+let isRTLIntv;
+
 /**
  * A navigation drawer that can slide in from the left or right
  * @param  {HTMLElement} element
@@ -1684,7 +1686,7 @@ const drawerComponent = () => ({
    * @type {Array}
    */
   observers: [
-    '_resetPosition(align)',
+    '_resetPosition(align, isRTL)',
     '_fireChange(opened, persistent, align, position)',
     '_onChangedState(_drawerState)',
     '_onClose(opened)'
@@ -1709,6 +1711,8 @@ const drawerComponent = () => ({
     OPENED_PERSISTENT: 2,
     CLOSED: 3
   },
+
+  isRTL: false,
 
   /**
    * The drawer content HTMLElement
@@ -1802,10 +1806,10 @@ const drawerComponent = () => ({
   _resetPosition () {
     switch (this.align) {
       case 'start':
-        this.position = this._isRTL() ? 'right' : 'left';
+        this.position = this.isRTL ? 'right' : 'left';
         return
       case 'end':
-        this.position = this._isRTL() ? 'left' : 'right';
+        this.position = this.isRTL ? 'left' : 'right';
         return
     }
     this.position = this.align;
@@ -1837,10 +1841,15 @@ const drawerComponent = () => ({
     }
   },
 
+  destroy() {
+    clearInterval(isRTLIntv);
+  },
+
   /**
    * Initialize component
    */
   init () {
+    isRTLIntv = setInterval(() => this.isRTL = this._isRTL());
     this._resetPosition();
     this._setTransitionDuration('0s');
 
@@ -5487,17 +5496,19 @@ var sidebarProps = {
 
 //
 
+let isRTLIntv$1;
+
 var script$6 = {
   components: {
     PerfectScrollbar: __vue_component__$1
   },
   mixins: [sidebarProps],
+  data() {
+    return {
+      isRTL: false
+    }
+  },
   computed: {
-    isRTL() {
-      if (!process.server && this.$el) {
-        return window.getComputedStyle(this.$el).direction === 'rtl'
-      }
-    },
     position() {
       let position = this.align;
       let isRTL = this.isRTL;
@@ -5530,6 +5541,14 @@ var script$6 = {
 
       return classes
     }
+  },
+  created() {
+    this.$nextTick(() => {
+      isRTLIntv$1 = setInterval(() => this.isRTL = window.getComputedStyle(this.$el).direction === 'rtl', 100);
+    });
+  },
+  beforeDestroy() {
+    clearInterval(isRTLIntv$1);
   },
   methods: {
     update() {

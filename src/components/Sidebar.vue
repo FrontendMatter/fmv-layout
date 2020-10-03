@@ -11,17 +11,19 @@
 import PerfectScrollbar from './PerfectScrollbar.vue'
 import SidebarProps from './Sidebar.props'
 
+let isRTLIntv
+
 export default {
   components: {
     PerfectScrollbar
   },
   mixins: [SidebarProps],
+  data() {
+    return {
+      isRTL: false
+    }
+  },
   computed: {
-    isRTL() {
-      if (!process.server && this.$el) {
-        return window.getComputedStyle(this.$el).direction === 'rtl'
-      }
-    },
     position() {
       let position = this.align
       let isRTL = this.isRTL
@@ -54,6 +56,14 @@ export default {
 
       return classes
     }
+  },
+  created() {
+    this.$nextTick(() => {
+      isRTLIntv = setInterval(() => this.isRTL = window.getComputedStyle(this.$el).direction === 'rtl', 100)
+    })
+  },
+  beforeDestroy() {
+    clearInterval(isRTLIntv)
   },
   methods: {
     update() {
