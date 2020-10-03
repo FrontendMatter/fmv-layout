@@ -50,8 +50,7 @@ export default [
       format: 'esm',
       file: 'dist/fmv-layout.esm.js'
     },
-    plugins,
-    external: []
+    plugins
   },
 
   // Browser UMD
