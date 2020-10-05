@@ -1,5 +1,9 @@
-import { handler } from 'dom-factory';
-import { drawerComponent, drawerLayoutComponent, headerComponent, boxComponent, headerLayoutComponent } from 'material-design-kit';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var domFactory = require('dom-factory');
+var materialDesignKit = require('material-design-kit');
 
 if (!Array.isArray) {
   Array.isArray = arg =>
@@ -88,7 +92,7 @@ const drawerProps = {
 };
 
 //
-handler.register('mdk-drawer', drawerComponent);
+domFactory.handler.register('mdk-drawer', materialDesignKit.drawerComponent);
 
 // Events we emit on $root
 const EVENT_STATE = 'fm::drawer::state';
@@ -145,11 +149,11 @@ var script = {
       this.onInitHandler()
     );
     this.$nextTick(() => {
-      handler.upgradeElement(this.$el, 'mdk-drawer');
+      domFactory.handler.upgradeElement(this.$el, 'mdk-drawer');
     });
   },
   beforeDestroy() {
-    handler.downgradeElement(this.$el, 'mdk-drawer');
+    domFactory.handler.downgradeElement(this.$el, 'mdk-drawer');
     this.$el.removeEventListener('mdk-drawer-change', () =>
       this.onChangeHandler()
     );
@@ -2096,7 +2100,7 @@ const prefixProps = (props, prefix) => {
 };
 
 //
-handler.register('mdk-drawer-layout', drawerLayoutComponent);
+domFactory.handler.register('mdk-drawer-layout', materialDesignKit.drawerLayoutComponent);
 
 var script$2 = {
   components: {
@@ -2133,14 +2137,14 @@ var script$2 = {
       'domfactory-component-upgraded',
       this.init.bind(this)
     );
-    this.$nextTick(() => handler.upgradeElement(this.$el, 'mdk-drawer-layout'));
+    this.$nextTick(() => domFactory.handler.upgradeElement(this.$el, 'mdk-drawer-layout'));
   },
   beforeDestroy() {
     this.$el.removeEventListener(
       'domfactory-component-upgraded',
       this.init.bind(this)
     );
-    handler.downgradeElement(this.$el, 'mdk-drawer-layout');
+    domFactory.handler.downgradeElement(this.$el, 'mdk-drawer-layout');
   },
   methods: {
     init() {
@@ -2189,7 +2193,7 @@ var __vue_staticRenderFns__$2 = [];
   );
 
 //
-handler.register('mdk-header', headerComponent);
+domFactory.handler.register('mdk-header', materialDesignKit.headerComponent);
 
 var script$3 = {
   props: {
@@ -2238,12 +2242,12 @@ var script$3 = {
       'domfactory-component-upgraded',
       this.init.bind(this)
     );
-    this.$nextTick(() => handler.upgradeElement(this.$el, 'mdk-header'));
+    this.$nextTick(() => domFactory.handler.upgradeElement(this.$el, 'mdk-header'));
   },
   beforeDestroy() {
     this.$el.mdkHeader.eventTarget.removeEventListener('scroll', () => this.onScroll());
 
-    handler.downgradeElement(this.$el, 'mdk-header');
+    domFactory.handler.downgradeElement(this.$el, 'mdk-header');
     this.$el.removeEventListener(
       'domfactory-component-upgraded',
       this.init.bind(this)
@@ -2303,7 +2307,7 @@ var __vue_staticRenderFns__$3 = [];
   );
 
 //
-handler.register('mdk-box', boxComponent);
+domFactory.handler.register('mdk-box', materialDesignKit.boxComponent);
 
 var script$4 = {
   props: {
@@ -2340,14 +2344,14 @@ var script$4 = {
       'domfactory-component-upgraded',
       this.init.bind(this)
     );
-    this.$nextTick(() => handler.upgradeElement(this.$el, 'mdk-box'));
+    this.$nextTick(() => domFactory.handler.upgradeElement(this.$el, 'mdk-box'));
   },
   beforeDestroy() {
     if (this.$el.mdkBox) {
       this.$el.mdkBox.eventTarget.removeEventListener('scroll', () => this.onScroll());
     }
 
-    handler.downgradeElement(this.$el, 'mdk-box');
+    domFactory.handler.downgradeElement(this.$el, 'mdk-box');
     this.$el.removeEventListener(
       'domfactory-component-upgraded',
       this.init.bind(this)
@@ -2407,7 +2411,7 @@ var __vue_staticRenderFns__$4 = [];
   );
 
 //
-handler.register('mdk-header-layout', headerLayoutComponent);
+domFactory.handler.register('mdk-header-layout', materialDesignKit.headerLayoutComponent);
 
 var script$5 = {
   components: {
@@ -2466,14 +2470,14 @@ var script$5 = {
       'domfactory-component-upgraded',
       this.init.bind(this)
     );
-    this.$nextTick(() => handler.upgradeElement(this.$el, 'mdk-header-layout'));
+    this.$nextTick(() => domFactory.handler.upgradeElement(this.$el, 'mdk-header-layout'));
   },
   beforeDestroy() {
     this.$el.removeEventListener(
       'domfactory-component-upgraded',
       this.init.bind(this)
     );
-    handler.downgradeElement(this.$el, 'mdk-header-layout');
+    domFactory.handler.downgradeElement(this.$el, 'mdk-header-layout');
   },
   methods: {
     init() {
@@ -3114,4 +3118,14 @@ const mixins = {
   listenOnRootMixin
 };
 
-export { __vue_component__$4 as FmvBox, __vue_component__ as FmvDrawer, __vue_component__$2 as FmvDrawerLayout, __vue_component__$3 as FmvHeader, __vue_component__$5 as FmvHeaderLayout, __vue_component__$1 as FmvPerfectScrollbar, __vue_component__$6 as FmvSidebar, __vue_component__$7 as FmvSidebarMenu, toggle as FmvToggle, mixins, utils };
+exports.FmvBox = __vue_component__$4;
+exports.FmvDrawer = __vue_component__;
+exports.FmvDrawerLayout = __vue_component__$2;
+exports.FmvHeader = __vue_component__$3;
+exports.FmvHeaderLayout = __vue_component__$5;
+exports.FmvPerfectScrollbar = __vue_component__$1;
+exports.FmvSidebar = __vue_component__$6;
+exports.FmvSidebarMenu = __vue_component__$7;
+exports.FmvToggle = toggle;
+exports.mixins = mixins;
+exports.utils = utils;

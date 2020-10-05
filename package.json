@@ -1,12 +1,13 @@
 {
   "name": "fmv-layout",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "Layout Vue Components",
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
     "watch": "rollup -c --watch"
   },
-  "main": "dist/fmv-layout.umd.js",
+  "main": "dist/fmv-layout.ssr.js",
+  "browser": "dist/fmv-layout.umd.js",
   "module": "dist/fmv-layout.esm.js",
   "author": "FrontendMatter <contact@frontendmatter.com> (http://www.frontendmatter.com)",
   "license": "UNLICENSED",

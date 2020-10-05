@@ -27,9 +27,6 @@ const plugins = [
     extensions: ['.js', '.vue']
   }),
   commonjs(),
-  css({ 
-    output: 'dist/fmv-layout.css' 
-  }),
   vue({
     css: false,
     style: {
@@ -39,6 +36,9 @@ const plugins = [
         }
       }
     }
+  }),
+  css({ 
+    output: 'dist/fmv-layout.css' 
   })
 ]
 
@@ -49,6 +49,16 @@ export default [
     output: {
       format: 'esm',
       file: 'dist/fmv-layout.esm.js'
+    },
+    plugins
+  },
+
+  // SSR build.
+  {
+    input: 'src/index.js',
+    output: {
+      format: 'cjs',
+      file: 'dist/fmv-layout.ssr.js'
     },
     plugins
   },

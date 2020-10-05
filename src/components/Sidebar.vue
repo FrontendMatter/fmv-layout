@@ -57,9 +57,9 @@ export default {
       return classes
     }
   },
-  created() {
+  mounted() {
     this.$nextTick(() => {
-      isRTLIntv = setInterval(() => this.isRTL = window.getComputedStyle(this.$el).direction === 'rtl', 100)
+      isRTLIntv = setInterval(() => this.isRTL = window && window.getComputedStyle(this.$el).direction === 'rtl', 100)
     })
   },
   beforeDestroy() {
