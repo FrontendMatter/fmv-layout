@@ -2270,7 +2270,7 @@ var script$3 = {
 const __vue_script__$3 = script$3;
 
 /* template */
-var __vue_render__$3 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mdk-header js-mdk-header",attrs:{"data-effects":_vm.headerEffects}},[_c('div',{staticClass:"mdk-header__bg"},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.headerImage),expression:"headerImage"}],staticClass:"mdk-header__bg-front",style:(("background-image: url(" + _vm.headerImage + ");"))})]),_vm._v(" "),_c('div',{staticClass:"mdk-header__content",class:_vm.headerContentClass},[_vm._t("default",[_c('div',{attrs:{"data-primary":""}},[_vm._v("\n        // header\n      ")])])],2)])};
+var __vue_render__$3 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mdk-header js-mdk-header",attrs:{"data-effects":_vm.headerEffects}},[_c('div',{staticClass:"mdk-header__bg"},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.headerImage),expression:"headerImage"}],staticClass:"mdk-header__bg-front",style:(_vm.headerImage ? ("background-image: url(" + _vm.headerImage + ");") : '')})]),_vm._v(" "),_c('div',{staticClass:"mdk-header__content",class:_vm.headerContentClass},[_vm._t("default",[_c('div',{attrs:{"data-primary":""}},[_vm._v("\n        // header\n      ")])])],2)])};
 var __vue_staticRenderFns__$3 = [];
 
   /* style */
@@ -2374,7 +2374,7 @@ var script$4 = {
 const __vue_script__$4 = script$4;
 
 /* template */
-var __vue_render__$4 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mdk-box",attrs:{"data-effects":_vm.boxEffects}},[_c('div',{staticClass:"mdk-box__bg"},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.boxImage),expression:"boxImage"}],staticClass:"mdk-box__bg-front",style:(("background-image: url(" + _vm.boxImage + ");"))})]),_vm._v(" "),_c('div',{staticClass:"mdk-box__content",class:_vm.boxContentClass},[_vm._t("default",[_c('div',[_vm._v("\n        // box content\n      ")])])],2)])};
+var __vue_render__$4 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mdk-box",attrs:{"data-effects":_vm.boxEffects}},[_c('div',{staticClass:"mdk-box__bg"},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.boxImage),expression:"boxImage"}],staticClass:"mdk-box__bg-front",style:(_vm.boxImage ? ("background-image: url(" + _vm.boxImage + ");") : '')})]),_vm._v(" "),_c('div',{staticClass:"mdk-box__content",class:_vm.boxContentClass},[_vm._t("default",[_c('div',[_vm._v("\n        // box content\n      ")])])],2)])};
 var __vue_staticRenderFns__$4 = [];
 
   /* style */

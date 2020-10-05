@@ -5,7 +5,7 @@
     <div class="mdk-header__bg">
       <div 
         v-show="headerImage"
-        class="mdk-header__bg-front" :style="`background-image: url(${headerImage});`" />
+        class="mdk-header__bg-front" :style="headerImage ? `background-image: url(${headerImage});` : ''" />
     </div>
     <div 
       class="mdk-header__content"

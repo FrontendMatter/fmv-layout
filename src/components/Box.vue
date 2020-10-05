@@ -6,7 +6,7 @@
       <div 
         v-show="boxImage"
         class="mdk-box__bg-front" 
-        :style="`background-image: url(${boxImage});`" />
+        :style="boxImage ? `background-image: url(${boxImage});` : ''" />
     </div>
     <div 
       class="mdk-box__content"
