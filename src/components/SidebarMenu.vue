@@ -134,6 +134,10 @@ export default {
               id: item.icon.id,
               type: item.icon.type,
             } : null,
+            badge: !!item.badge ? {
+              label: item.badge.label,
+              variant: item.badge.variant,
+            } : null,
             open: item.open,
             click: item.click,
             route: item.route,
@@ -152,6 +156,10 @@ export default {
               icon: <Object> {
                 id: 'md-icon',
                 type: 'tune',
+              },
+              badge: <Object> {
+                label: 'Badge',
+                variant: 'accent badge-notifications',
               },
               open: <Boolean> false,
               click: <Function> function(event){},
