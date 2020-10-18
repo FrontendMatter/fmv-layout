@@ -35,31 +35,33 @@
               tag="ul"
               @shown="emitState(getId(item), true)"
               @hidden="emitState(getId(item), false)">
-              <router-link
+              <li
                 v-for="(child, idx) in item.children"
                 :key="`smi-${idx}-${$store.state.locale}`"
-                :to="child.route"
-                tag="li"
                 class="sidebar-menu-item"
-                :exact="child.exact">
-                <a class="sidebar-menu-button">
+                :class="{ 'active': child.active }">
+                <component
+                  :is="child.route ? linkComponent : 'a'"
+                  v-bind="linkComponentProps(child)"
+                  @click="onClick($event, child)"
+                  class="sidebar-menu-button">
                   <span class="sidebar-menu-text">{{ child.label }}</span>
-                </a>
-              </router-link>
+                </component>
+              </li>
             </b-collapse>
           </li>
         </template>
 
-        <component
-          :is="item.route ? 'router-link' : 'li'"
+        <li
           v-else
           :key="`smi-${itemIdx}-${$store.state.locale}`"
-          :to="item.route ? item.route : {}"
-          @click="onClick($event, item.click)"
           class="sidebar-menu-item"
-          tag="li"
-          :exact="item.exact">
-          <a class="sidebar-menu-button">
+          :class="{ 'active': item.active }">
+          <component
+            :is="item.route ? linkComponent : 'a'"
+            v-bind="linkComponentProps(item)"
+            @click="onClick($event, item)"
+            class="sidebar-menu-button">
             <component
               v-if="!!item.icon" 
               :is="item.icon.type" 
@@ -73,8 +75,8 @@
               :variant="item.badge.variant" 
               class="sidebar-menu-badge ml-auto"
               v-text="item.badge.label" />
-          </a>
-        </component>
+          </component>
+        </li>
 
       </template>
     </ul>
@@ -82,6 +84,21 @@
 </template>
 
 <script>
+import {isSameRoute, isIncludedRoute} from '~/utils/router'
+
+const active = (ctx, item) => {
+  try {
+    const resolved = ctx.$router.resolve(item.route).resolved
+    const exact = item.exact === false ? false : true
+    return exact
+      ? isSameRoute(resolved, ctx.$route)
+      : isIncludedRoute(resolved, ctx.$route)
+  } catch(e) {
+    console.error(`invalid route`, item)
+  }
+  return false
+}
+
 export default {
   name: 'FmvSidebarMenu',
   props: {
@@ -94,6 +111,39 @@ export default {
     menuClass: {
       type: [Array, String, Object],
       default: null
+    },
+    linkComponent: {
+      type: [String, Object],
+      default: () => 'b-link'
+    },
+    routeMatches: {
+      type: Function,
+      default: function (item) {
+        let route
+
+        try {
+          item.children.map(child => {
+            if (typeof child.route === 'string') {
+              route = route || this.$route.name === child.route
+              route = route || this.$route.path === child.route
+
+              if (this.$i18n) {
+                this.$i18n.locales.map(locale => {
+                  const localeRoute = `${child.route}__${locale.code}`
+
+                  route = route || this.$route.name === localeRoute
+                  route = route || this.$route.path === localeRoute
+                })
+              }
+            }
+            
+            route = route || this.$route.name === child.route.name
+            route = route || this.$route.path === child.route.path
+          })
+        } catch(e) {}
+
+        return route
+      },
     }
   },
   data() {
@@ -104,29 +154,35 @@ export default {
   watch: {
     '$route': {
       deep: true,
-      handler() {
-        this.matchRoute()
-      }
+      handler: 'setMenu'
     },
-    '$root.$i18n.locale': {
-      handler(val, oldVal) {
-        if (val !== oldVal) {
-          this.setMenu(this.menu)
-        }
-      }
-    }
+    '$root.$i18n.locale': 'setMenu'
   },
   created() {
-    this.setMenu(this.menu)
-    this.$root.$on('fmv::sidebar-menu::reload', () => this.setMenu(this.menu))
+    this.setMenu()
+    this.$root.$on('fmv::sidebar-menu::reload', this.setMenu)
     this.$root.$on('bv::collapse::state', (collapseId, open) => {
       this.emitState(collapseId, false, open)
     })
   },
+  beforeMount() {
+    document.addEventListener('inertia:success', () => this.setMenu())
+  },
+  destroyed() {
+    document.removeEventListener('inertia:success', () => this.setMenu())
+  },
   methods: {
-    setMenu(menu) {
+    linkComponentProps({ route, exact }) {
+      return this.linkComponent === 'inertia-link'
+        ? { href: route || '#' }
+        : {
+          to: route,
+          exact
+        }
+    },
+    setMenu() {
       try {
-        this.localMenu = menu.map(item => {
+        this.localMenu = this.menu.map(item => {
           return {
             id: item.id,
             label: item.label,
@@ -138,16 +194,29 @@ export default {
               label: item.badge.label,
               variant: item.badge.variant,
             } : null,
-            open: item.open,
+            open: typeof item.open === 'function' ? item.open(this, item) : item.open,
+            active: typeof item.active === 'function' 
+              ? item.active(this, item) 
+              : (this.$route && item.route ? active(this, item) : item.active),
             click: item.click,
             route: item.route,
-            exact: item.exact,
-            children: item.children
+            exact: item.exact === false ? false : true,
+            children: (item.children || []).map(item => {
+              return {
+                label: item.label,
+                route: item.route,
+                exact: item.exact === false ? false : true,
+                active: typeof item.active === 'function' 
+                  ? item.active(this, item) 
+                  : (this.$route && item.route ? active(this, item) : item.active),
+                click: item.click,
+              }
+            })
           }
         })
         this.matchRoute()
       } catch(e) {
-        console.warn(`
+        console.warn(e, `
           Invalid sidebar menu structure. Valid example:
           [
             {
@@ -161,14 +230,24 @@ export default {
                 label: 'Badge',
                 variant: 'accent badge-notifications',
               },
-              open: <Boolean> false,
-              click: <Function> function(event){},
               route: <String|Object>,
               exact: <Boolean> true,
+              open: <Boolean|Function> (ctx, item) => {},
+              active: <Boolean|Function> (ctx, item) => { item.route.indexOf('some-route') !== -1 },
+              click: <Function> function(ctx, event, item) {},
               children: <Array> [
                 {
                   label: <String> 'Sign up',
-                  route: <String|Object> '/signup'
+                  route: <String|Object> '/signup',
+                  exact: <Boolean> true,
+                  active: <Boolean|Function> (ctx, item) => { item.route.indexOf('signup') !== -1 },
+                },
+                {
+                  label: <String> 'Logout',
+                  click: <Function> (ctx, event, item) => {
+                    event.preventDefault()
+                    ctx.$root.$emit('logout')
+                  }
                 }
               ]
             }
@@ -179,7 +258,7 @@ export default {
     matchRoute() {
       this.$nextTick(() => {
         this.localMenu.map(item => {
-          const open = this.routeMatches(item)
+          const open = this.routeMatches(item) || (item.children || []).find(item => item.active)
           this[
             open ? 'open' : 'close'
           ](item)
@@ -210,38 +289,9 @@ export default {
     getId(item) {
       return `sm${item.id}`
     },
-    routeMatches(item) {
-      let route
-      if (process.server) {
-        return false
-      }
-      try {
-        item.children.map(child => {
-          if (typeof child.route === 'string') {
-            route = route || this.$route.name === child.route
-            route = route || this.$route.path === child.route
-
-            if (this.$i18n) {
-              this.$i18n.locales.map(locale => {
-                const localeRoute = `${child.route}__${locale.code}`
-
-                route = route || this.$route.name === localeRoute
-                route = route || this.$route.path === localeRoute
-              })
-            }
-          }
-          
-          route = route || this.$route.name === child.route.name
-          route = route || this.$route.path === child.route.path
-        })
-      } catch(e) {}
-
-      return route
-    },
-    onClick(e, callback) {
-      if (callback) {
-        e.preventDefault()
-        callback(e)
+    onClick(event, item) {
+      if (item.click) {
+        item.click(this, event, item)
       }
     }
   }

@@ -1,6 +1,6 @@
 {
   "name": "fmv-layout",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Layout Vue Components",
   "scripts": {
     "build": "rollup -c --environment BUILD:production",

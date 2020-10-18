@@ -76,7 +76,9 @@ export default {
     this.$nextTick(() => handler.upgradeElement(this.$el, 'mdk-header'))
   },
   beforeDestroy() {
-    this.$el.mdkHeader.eventTarget.removeEventListener('scroll', () => this.onScroll())
+    if (this.$el.mdkHeader) {
+      this.$el.mdkHeader.eventTarget.removeEventListener('scroll', () => this.onScroll())
+    }
 
     handler.downgradeElement(this.$el, 'mdk-header')
     this.$el.removeEventListener(

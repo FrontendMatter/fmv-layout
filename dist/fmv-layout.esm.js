@@ -2241,7 +2241,9 @@ var script$3 = {
     this.$nextTick(() => handler.upgradeElement(this.$el, 'mdk-header'));
   },
   beforeDestroy() {
-    this.$el.mdkHeader.eventTarget.removeEventListener('scroll', () => this.onScroll());
+    if (this.$el.mdkHeader) {
+      this.$el.mdkHeader.eventTarget.removeEventListener('scroll', () => this.onScroll());
+    }
 
     handler.downgradeElement(this.$el, 'mdk-header');
     this.$el.removeEventListener(
@@ -2656,89 +2658,199 @@ var __vue_staticRenderFns__$6 = [];
     undefined
   );
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+var encodeReserveRE = /[!'()*]/g;
+var encodeReserveReplacer = function (c) { return '%' + c.charCodeAt(0).toString(16); };
+var commaRE = /%2C/g;
+
+// fixed encodeURIComponent which is more conformant to RFC3986:
+// - escapes [!'()*]
+// - preserve commas
+var encode = function (str) { return encodeURIComponent(str)
+  .replace(encodeReserveRE, encodeReserveReplacer)
+  .replace(commaRE, ','); };
+
+function stringifyQuery (obj) {
+  var res = obj ? Object.keys(obj).map(function (key) {
+    var val = obj[key];
+
+    if (val === undefined) {
+      return ''
+    }
+
+    if (val === null) {
+      return encode(key)
+    }
+
+    if (Array.isArray(val)) {
+      var result = [];
+      val.forEach(function (val2) {
+        if (val2 === undefined) {
+          return
+        }
+        if (val2 === null) {
+          result.push(encode(key));
+        } else {
+          result.push(encode(key) + '=' + encode(val2));
+        }
+      });
+      return result.join('&')
+    }
+
+    return encode(key) + '=' + encode(val)
+  }).filter(function (x) { return x.length > 0; }).join('&') : null;
+  return res ? ("?" + res) : ''
+}
+
+var trailingSlashRE = /\/?$/;
+
+function createRoute (
+  record,
+  location,
+  redirectedFrom,
+  router
+) {
+  var stringifyQuery = router && router.options.stringifyQuery;
+
+  var query = location.query || {};
+  try {
+    query = clone(query);
+  // eslint-disable-next-line no-empty
+  } catch (e) {}
+
+  var route = {
+    name: location.name || (record && record.name),
+    meta: (record && record.meta) || {},
+    path: location.path || '/',
+    hash: location.hash || '',
+    query: query,
+    params: location.params || {},
+    fullPath: getFullPath(location, stringifyQuery),
+    matched: record ? formatMatch(record) : []
+  };
+  if (redirectedFrom) {
+    route.redirectedFrom = getFullPath(redirectedFrom, stringifyQuery);
+  }
+  return Object.freeze(route)
+}
+
+function clone (value) {
+  if (Array.isArray(value)) {
+    return value.map(clone)
+  } else if (value && typeof value === 'object') {
+    var res = {};
+    for (var key in value) {
+      res[key] = clone(value[key]);
+    }
+    return res
+  } else {
+    return value
+  }
+}
+
+// the starting route that represents the initial state
+var START = createRoute(null, {
+  path: '/'
+});
+
+function formatMatch (record) {
+  var res = [];
+  while (record) {
+    res.unshift(record);
+    record = record.parent;
+  }
+  return res
+}
+
+function getFullPath (
+  ref,
+  _stringifyQuery
+) {
+  var path = ref.path;
+  var query = ref.query; if ( query === void 0 ) query = {};
+  var hash = ref.hash; if ( hash === void 0 ) hash = '';
+
+  var stringify = _stringifyQuery || stringifyQuery;
+  return (path || '/') + stringify(query) + hash
+}
+
+function isSameRoute (a, b) {
+  if (b === START) {
+    return a === b
+  } else if (!b) {
+    return false
+  } else if (a.path && b.path) {
+    return (
+      a.path.replace(trailingSlashRE, '') === b.path.replace(trailingSlashRE, '') &&
+      a.hash === b.hash &&
+      isObjectEqual(a.query, b.query)
+    )
+  } else if (a.name && b.name) {
+    return (
+      a.name === b.name &&
+      a.hash === b.hash &&
+      isObjectEqual(a.query, b.query) &&
+      isObjectEqual(a.params, b.params)
+    )
+  } else {
+    return false
+  }
+}
+
+function isObjectEqual (a, b) {
+  if ( a === void 0 ) a = {};
+  if ( b === void 0 ) b = {};
+
+  // handle null value #1566
+  if (!a || !b) { return a === b }
+  var aKeys = Object.keys(a);
+  var bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) {
+    return false
+  }
+  return aKeys.every(function (key) {
+    var aVal = a[key];
+    var bVal = b[key];
+    // check nested equality
+    if (typeof aVal === 'object' && typeof bVal === 'object') {
+      return isObjectEqual(aVal, bVal)
+    }
+    return String(aVal) === String(bVal)
+  })
+}
+
+function isIncludedRoute (current, target) {
+  return (
+    current.path.replace(trailingSlashRE, '/').indexOf(
+      target.path.replace(trailingSlashRE, '/')
+    ) === 0 &&
+    (!target.hash || current.hash === target.hash) &&
+    queryIncludes(current.query, target.query)
+  )
+}
+
+function queryIncludes (current, target) {
+  for (var key in target) {
+    if (!(key in current)) {
+      return false
+    }
+  }
+  return true
+}
+
+//
+
+const active = (ctx, item) => {
+  try {
+    const resolved = ctx.$router.resolve(item.route).resolved;
+    const exact = item.exact === false ? false : true;
+    return exact
+      ? isSameRoute(resolved, ctx.$route)
+      : isIncludedRoute(resolved, ctx.$route)
+  } catch(e) {
+    console.error(`invalid route`, item);
+  }
+  return false
+};
 
 var script$7 = {
   name: 'FmvSidebarMenu',
@@ -2752,6 +2864,39 @@ var script$7 = {
     menuClass: {
       type: [Array, String, Object],
       default: null
+    },
+    linkComponent: {
+      type: [String, Object],
+      default: () => 'b-link'
+    },
+    routeMatches: {
+      type: Function,
+      default: function (item) {
+        let route;
+
+        try {
+          item.children.map(child => {
+            if (typeof child.route === 'string') {
+              route = route || this.$route.name === child.route;
+              route = route || this.$route.path === child.route;
+
+              if (this.$i18n) {
+                this.$i18n.locales.map(locale => {
+                  const localeRoute = `${child.route}__${locale.code}`;
+
+                  route = route || this.$route.name === localeRoute;
+                  route = route || this.$route.path === localeRoute;
+                });
+              }
+            }
+            
+            route = route || this.$route.name === child.route.name;
+            route = route || this.$route.path === child.route.path;
+          });
+        } catch(e) {}
+
+        return route
+      },
     }
   },
   data() {
@@ -2762,29 +2907,35 @@ var script$7 = {
   watch: {
     '$route': {
       deep: true,
-      handler() {
-        this.matchRoute();
-      }
+      handler: 'setMenu'
     },
-    '$root.$i18n.locale': {
-      handler(val, oldVal) {
-        if (val !== oldVal) {
-          this.setMenu(this.menu);
-        }
-      }
-    }
+    '$root.$i18n.locale': 'setMenu'
   },
   created() {
-    this.setMenu(this.menu);
-    this.$root.$on('fmv::sidebar-menu::reload', () => this.setMenu(this.menu));
+    this.setMenu();
+    this.$root.$on('fmv::sidebar-menu::reload', this.setMenu);
     this.$root.$on('bv::collapse::state', (collapseId, open) => {
       this.emitState(collapseId, false, open);
     });
   },
+  beforeMount() {
+    document.addEventListener('inertia:success', () => this.setMenu());
+  },
+  destroyed() {
+    document.removeEventListener('inertia:success', () => this.setMenu());
+  },
   methods: {
-    setMenu(menu) {
+    linkComponentProps({ route, exact }) {
+      return this.linkComponent === 'inertia-link'
+        ? { href: route || '#' }
+        : {
+          to: route,
+          exact
+        }
+    },
+    setMenu() {
       try {
-        this.localMenu = menu.map(item => {
+        this.localMenu = this.menu.map(item => {
           return {
             id: item.id,
             label: item.label,
@@ -2796,16 +2947,29 @@ var script$7 = {
               label: item.badge.label,
               variant: item.badge.variant,
             } : null,
-            open: item.open,
+            open: typeof item.open === 'function' ? item.open(this, item) : item.open,
+            active: typeof item.active === 'function' 
+              ? item.active(this, item) 
+              : (this.$route && item.route ? active(this, item) : item.active),
             click: item.click,
             route: item.route,
-            exact: item.exact,
-            children: item.children
+            exact: item.exact === false ? false : true,
+            children: (item.children || []).map(item => {
+              return {
+                label: item.label,
+                route: item.route,
+                exact: item.exact === false ? false : true,
+                active: typeof item.active === 'function' 
+                  ? item.active(this, item) 
+                  : (this.$route && item.route ? active(this, item) : item.active),
+                click: item.click,
+              }
+            })
           }
         });
         this.matchRoute();
       } catch(e) {
-        console.warn(`
+        console.warn(e, `
           Invalid sidebar menu structure. Valid example:
           [
             {
@@ -2819,14 +2983,24 @@ var script$7 = {
                 label: 'Badge',
                 variant: 'accent badge-notifications',
               },
-              open: <Boolean> false,
-              click: <Function> function(event){},
               route: <String|Object>,
               exact: <Boolean> true,
+              open: <Boolean|Function> (ctx, item) => {},
+              active: <Boolean|Function> (ctx, item) => { item.route.indexOf('some-route') !== -1 },
+              click: <Function> function(ctx, event, item) {},
               children: <Array> [
                 {
                   label: <String> 'Sign up',
-                  route: <String|Object> '/signup'
+                  route: <String|Object> '/signup',
+                  exact: <Boolean> true,
+                  active: <Boolean|Function> (ctx, item) => { item.route.indexOf('signup') !== -1 },
+                },
+                {
+                  label: <String> 'Logout',
+                  click: <Function> (ctx, event, item) => {
+                    event.preventDefault()
+                    ctx.$root.$emit('logout')
+                  }
                 }
               ]
             }
@@ -2837,7 +3011,7 @@ var script$7 = {
     matchRoute() {
       this.$nextTick(() => {
         this.localMenu.map(item => {
-          const open = this.routeMatches(item);
+          const open = this.routeMatches(item) || (item.children || []).find(item => item.active);
           this[
             open ? 'open' : 'close'
           ](item);
@@ -2868,38 +3042,9 @@ var script$7 = {
     getId(item) {
       return `sm${item.id}`
     },
-    routeMatches(item) {
-      let route;
-      if (process.server) {
-        return false
-      }
-      try {
-        item.children.map(child => {
-          if (typeof child.route === 'string') {
-            route = route || this.$route.name === child.route;
-            route = route || this.$route.path === child.route;
-
-            if (this.$i18n) {
-              this.$i18n.locales.map(locale => {
-                const localeRoute = `${child.route}__${locale.code}`;
-
-                route = route || this.$route.name === localeRoute;
-                route = route || this.$route.path === localeRoute;
-              });
-            }
-          }
-          
-          route = route || this.$route.name === child.route.name;
-          route = route || this.$route.path === child.route.path;
-        });
-      } catch(e) {}
-
-      return route
-    },
-    onClick(e, callback) {
-      if (callback) {
-        e.preventDefault();
-        callback(e);
+    onClick(event, item) {
+      if (item.click) {
+        item.click(this, event, item);
       }
     }
   }
@@ -2912,7 +3057,7 @@ const __vue_script__$7 = script$7;
 var __vue_render__$7 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(_vm.menu)?_c('ul',{staticClass:"sidebar-menu",class:_vm.menuClass},[_vm._l((_vm.localMenu),function(item,itemIdx){return [(item.children !== undefined && item.children.length)?[_c('li',{key:("smi-collapse-" + itemIdx),staticClass:"sidebar-menu-item",class:{ 'open': item.open }},[_c('a',{directives:[{name:"b-toggle",rawName:"v-b-toggle",value:(_vm.getId(item)),expression:"getId(item)"}],staticClass:"sidebar-menu-button",attrs:{"href":"#"},on:{"click":function($event){$event.preventDefault();}}},[(!!item.icon)?_c(item.icon.type,{tag:"component",staticClass:"sidebar-menu-icon",class:{ 
                 'sidebar-menu-icon--left': item.icon.align === undefined || item.icon.align === 'left',
                 'sidebar-menu-icon--right': item.icon.align === 'right',
-              },domProps:{"textContent":_vm._s(item.icon.id)}}):_vm._e(),_vm._v("\n            "+_vm._s(item.label)+"\n            "),_c('span',{staticClass:"ml-auto sidebar-menu-toggle-icon"})],1),_vm._v(" "),_c('b-collapse',{staticClass:"sidebar-submenu sm-indent",attrs:{"id":_vm.getId(item),"tag":"ul"},on:{"shown":function($event){_vm.emitState(_vm.getId(item), true);},"hidden":function($event){_vm.emitState(_vm.getId(item), false);}},model:{value:(item.open),callback:function ($$v) {_vm.$set(item, "open", $$v);},expression:"item.open"}},_vm._l((item.children),function(child,idx){return _c('router-link',{key:("smi-" + idx + "-" + (_vm.$store.state.locale)),staticClass:"sidebar-menu-item",attrs:{"to":child.route,"tag":"li","exact":child.exact}},[_c('a',{staticClass:"sidebar-menu-button"},[_c('span',{staticClass:"sidebar-menu-text"},[_vm._v(_vm._s(child.label))])])])}),1)],1)]:_c(item.route ? 'router-link' : 'li',{key:("smi-" + itemIdx + "-" + (_vm.$store.state.locale)),tag:"component",staticClass:"sidebar-menu-item",attrs:{"to":item.route ? item.route : {},"tag":"li","exact":item.exact},on:{"click":function($event){return _vm.onClick($event, item.click)}}},[_c('a',{staticClass:"sidebar-menu-button"},[(!!item.icon)?_c(item.icon.type,{tag:"component",staticClass:"sidebar-menu-icon sidebar-menu-icon--left",domProps:{"textContent":_vm._s(item.icon.id)}}):_vm._e(),_vm._v(" "),_c('span',{staticClass:"sidebar-menu-text",domProps:{"textContent":_vm._s(item.label)}}),_vm._v(" "),(item.badge)?_c('b-badge',{staticClass:"sidebar-menu-badge ml-auto",attrs:{"variant":item.badge.variant},domProps:{"textContent":_vm._s(item.badge.label)}}):_vm._e()],1)])]})],2):_vm._e()])};
+              },domProps:{"textContent":_vm._s(item.icon.id)}}):_vm._e(),_vm._v("\n            "+_vm._s(item.label)+"\n            "),_c('span',{staticClass:"ml-auto sidebar-menu-toggle-icon"})],1),_vm._v(" "),_c('b-collapse',{staticClass:"sidebar-submenu sm-indent",attrs:{"id":_vm.getId(item),"tag":"ul"},on:{"shown":function($event){_vm.emitState(_vm.getId(item), true);},"hidden":function($event){_vm.emitState(_vm.getId(item), false);}},model:{value:(item.open),callback:function ($$v) {_vm.$set(item, "open", $$v);},expression:"item.open"}},_vm._l((item.children),function(child,idx){return _c('li',{key:("smi-" + idx + "-" + (_vm.$store.state.locale)),staticClass:"sidebar-menu-item",class:{ 'active': child.active }},[_c(child.route ? _vm.linkComponent : 'a',_vm._b({tag:"component",staticClass:"sidebar-menu-button",on:{"click":function($event){return _vm.onClick($event, child)}}},'component',_vm.linkComponentProps(child),false),[_c('span',{staticClass:"sidebar-menu-text"},[_vm._v(_vm._s(child.label))])])],1)}),0)],1)]:_c('li',{key:("smi-" + itemIdx + "-" + (_vm.$store.state.locale)),staticClass:"sidebar-menu-item",class:{ 'active': item.active }},[_c(item.route ? _vm.linkComponent : 'a',_vm._b({tag:"component",staticClass:"sidebar-menu-button",on:{"click":function($event){return _vm.onClick($event, item)}}},'component',_vm.linkComponentProps(item),false),[(!!item.icon)?_c(item.icon.type,{tag:"component",staticClass:"sidebar-menu-icon sidebar-menu-icon--left",domProps:{"textContent":_vm._s(item.icon.id)}}):_vm._e(),_vm._v(" "),_c('span',{staticClass:"sidebar-menu-text",domProps:{"textContent":_vm._s(item.label)}}),_vm._v(" "),(item.badge)?_c('b-badge',{staticClass:"sidebar-menu-badge ml-auto",attrs:{"variant":item.badge.variant},domProps:{"textContent":_vm._s(item.badge.label)}}):_vm._e()],1)],1)]})],2):_vm._e()])};
 var __vue_staticRenderFns__$7 = [];
 
   /* style */
