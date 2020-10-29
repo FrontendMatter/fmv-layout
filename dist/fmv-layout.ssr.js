@@ -2846,10 +2846,9 @@ function queryIncludes (current, target) {
 const active = (ctx, item) => {
   try {
     const resolved = ctx.$router.resolve(item.route).resolved;
-    const exact = item.exact === false ? false : true;
-    return exact
-      ? isSameRoute(resolved, ctx.$route)
-      : isIncludedRoute(resolved, ctx.$route)
+    return item.exact
+      ? isSameRoute(ctx.$route, resolved)
+      : isIncludedRoute(ctx.$route, resolved)
   } catch(e) {
     console.error(`invalid route`, item);
   }
@@ -2957,12 +2956,12 @@ var script$7 = {
               : (this.$route && item.route ? active(this, item) : item.active),
             click: item.click,
             route: item.route,
-            exact: item.exact === false ? false : true,
+            exact: item.exact,
             children: (item.children || []).map(item => {
               return {
                 label: item.label,
                 route: item.route,
-                exact: item.exact === false ? false : true,
+                exact: item.exact,
                 active: typeof item.active === 'function' 
                   ? item.active(this, item) 
                   : (this.$route && item.route ? active(this, item) : item.active),
